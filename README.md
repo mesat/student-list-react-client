@@ -17,3 +17,5 @@ https://stackoverflow.com/questions/21329426/spring-mvc-multipart-request-with-j
 https://coreui.io/react/
 
 https://coreui.io/demo/
+
+https://github.com/JedWatson/react-input-autosize
