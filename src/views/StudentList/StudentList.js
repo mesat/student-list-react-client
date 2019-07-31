@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactModal from 'react-modal';
+import AutosizeInput from 'react-input-autosize';
 import {
     Badge, Button, ButtonToolbar, Card, CardBody, CardHeader, Col, Input,
     InputGroup, InputGroupAddon, Pagination, PaginationItem, PaginationLink, Row, Table
@@ -16,8 +17,8 @@ const stdcolumntype = {
     teacher: 'teacher',
     stdclass: 'stdclass',
     stdnumber: 'stdnumber',
-    schoolstatus:'schoolStatus',
-    city:'city'
+    schoolstatus: 'schoolStatus',
+    city: 'city'
 }
 
 
@@ -27,19 +28,22 @@ class StudentList extends Component {
         super(props)
 
         this.state = {
-            stdcolumntype: PropTypes.oneOf(['id', 'name', 'surname', 'teacher', 'stdclass', 'stdnumber','schoolStatus','city']),
-            actualType: PropTypes.oneOf(['id', 'name', 'surname', 'teacher', 'stdclass', 'stdnumber','schoolStatus','city']),
+            stdcolumntype: PropTypes.oneOf(['id', 'name', 'surname', 'teacher', 'stdclass', 'stdnumber', 'schoolStatus', 'city']),
+            actualType: PropTypes.oneOf(['id', 'name', 'surname', 'teacher', 'stdclass', 'stdnumber', 'schoolStatus', 'city']),
             students: [],
             loading: true,
             newRecord: false,
-            newStudent: { name: "", surname: "", teacher: "", stdclass: "", stdnumber: "" ,schoolStatus:"",city:""},
+            newStudent: { id:"",name: "", surname: "", teacher: "", stdclass: "", stdnumber: "", schoolStatus: "", city: "" },
             onInput: false,
-            showModal: false
+            showModal: false,
+            onInputIsCurrent: false,
+            editRowId: ""
         }
         this.handleOnClick = this.handleOnClick.bind(this)
         this.handleOnBlur = this.handleOnBlur.bind(this)
         this.handleOpenModal = this.handleOpenModal.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
+        this.handleOnChange = this.handleOnChange.bind(this);
         console.log('constructr')
         this.studentService = new StudentService();
 
@@ -54,6 +58,8 @@ class StudentList extends Component {
         this.setState({ showModal: false });
     }
     handleOnBlur(event, type) {
+        console.log(`handleonBLur`)
+        console.log(this.state.newStudent)
 
         if (type === this.state.actualType) {
 
@@ -63,11 +69,18 @@ class StudentList extends Component {
             console.log(this.state.newStudent)
             console.log(type)
             console.log(event.target.value)
-            this.setState({
-                newStudent: { ...this.state.newStudent, [type]: event.target.value },
-                onInput: false,
-                actualType: stdcolumntype.id
-            })
+            if (this.state.onInputIsCurrent) {
+                this.setState({
+                    newStudent: { ...this.state.newStudent, [type]: event.target.value },
+                    actualType: stdcolumntype.id
+                })
+            }
+            else
+                this.setState({
+                    newStudent: { ...this.state.newStudent, [type]: event.target.value },
+                    onInput: false,
+                    actualType: stdcolumntype.id
+                })
             console.log(this.state.newStudent)
             console.log("handleOnBlur3")
             console.log(this.state.actualType)
@@ -79,15 +92,37 @@ class StudentList extends Component {
         console.log("handleOnClick2")
         console.log(type)
         this.setState({
-            onInput: true,
             actualType: type
 
         })
+        if (this.state.newRecord && !this.state.onInputIsCurrent) {
+
+            this.setState({
+                onInput: true,
+
+            })
+        }       
         console.log("handleOnClick3")
         console.log("actual type: ")
 
         console.log("handleOnClick4")
         console.log(this.state.actualType)
+    }
+    handleOnChange(type,event) {
+        console.log(event.target.value)
+        console.log(this.state.newRecord)
+        console.log(this.state.onInputIsCurrent)
+       
+        if (!this.state.newRecord && this.state.onInputIsCurrent) {
+
+            this.setState({
+                newStudent: { ...this.state.newStudent, [type]: event.target.value }
+
+            })
+            console.log(this.state.newStudent.name)
+            console.log(type)
+        }
+       
     }
 
     getStudents = (event) => {
@@ -136,7 +171,20 @@ class StudentList extends Component {
     }
 
 
-    Form(onInput, eventClick, eventBlur, datatype) {
+    Form(onInput, eventClick, eventBlur, datatype, onInputIsCurrent) {
+        if (onInputIsCurrent) {
+            console.log(`oninputiscurrent in Form: ${onInputIsCurrent}`)
+
+            return (
+                <div className="divTableCell"  >
+
+                    <AutosizeInput minLength={5} minWidth={5} autoComplete onClick={() => eventClick(datatype)} autoFocus value={this.state.newStudent[datatype]}
+                        onChange={this.handleOnChange.bind(this,datatype)} onBlur={(event) => eventBlur(event, datatype)} />
+
+                </div>
+
+            )
+        }
 
         if (datatype === this.state.actualType) {
             if (onInput) {
@@ -144,25 +192,26 @@ class StudentList extends Component {
                 console.log("Form creation datatype: ")
                 console.log(datatype)
                 return (
-                    <td className="tdElem" onClick={() => eventClick(datatype)} >
-                        <div>
-                            <input autoComplete autoFocus defaultValue={this.state.newStudent[datatype]}
-                                className="col-sm-4 input" type="text" onBlur={(event) => eventBlur(event, datatype)} />
-                        </div>
-                    </td>
+                    <div className="divTableCell" onClick={() => eventClick(datatype)} >
+
+                        <AutosizeInput autoComplete autoFocus defaultValue={this.state.newStudent[datatype]}
+                            onBlur={(event) => eventBlur(event, datatype)} />
+
+                    </div>
 
                 )
             }
+
 
         }
         else {
             //console.log(`this.state.newStudent.${datatype}`)
             console.log(this.state.newStudent)
             return (
-                <td onClick={() => eventClick(datatype)} >
+                <div className="divTableCell" onClick={() => eventClick(datatype)} >
                     {this.state.newStudent[datatype]}
                     {/* {`this.state.newStudent.${datatype}`}  */}
-                </td>
+                </div>
             )
         }
 
@@ -172,29 +221,58 @@ class StudentList extends Component {
     fillTable(load, stud) {
         if (load) {
             console.log("loading")
-            return <tr>loading</tr>
+            return <div>loading</div>
         }
         else {
             return stud.map((student) => {
                 // console.log(`loading: ${this.state.loading}`)
                 // console.log(`return list ${this.state.students} ${student.id}`)
                 console.log(`return list ${student.id}`)
+                if (!this.state.onInput && this.state.onInputIsCurrent && this.state.editRowId === student.id) {
+                    if (student.id !== this.state.newStudent.id) {//if we set the values before we should not set again to be able to change the new values
+                        this.state.newStudent = student;// don't render
+                        
+                    }
+
+
+
+                    return (
+                        <div className="divTableRow" key={student.id}>
+                            {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.name, this.state.onInputIsCurrent)}
+                            {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.surname, this.state.onInputIsCurrent)}
+                            {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.stdclass, this.state.onInputIsCurrent)}
+                            {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.schoolstatus, this.state.onInputIsCurrent)}
+                            {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.stdnumber, this.state.onInputIsCurrent)}
+                            {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.teacher, this.state.onInputIsCurrent)}
+                            {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.city, this.state.onInputIsCurrent)}
+
+
+
+                            <div className="divTableCell">
+                                <Button size="sm" color="primary"><i className="cui-check"></i></Button>
+                                <Button size="sm" color="primary"><i className="cui-circle-x"></i></Button>
+                                <Button size="sm" color="primary"><i className="cui-trash"></i></Button>
+                            </div>
+
+                        </div>);
+                }
+
                 return (
 
-                    <tr key={student.id}>
-                        <td>{student.name}</td>
-                        <td>{student.surname}</td>
-                        <td>{student.stdclass}</td>
-                        <td>{student.schoolStatus}</td>
-                        <td>{student.stdnumber}</td>
-                        <td>{student.teacher}</td>
-                        <td>{student.city}</td>
-                        <td>
+                    <div className="divTableRow" key={student.id}>
+                        <div className="divTableCell">{student.name}</div>
+                        <div className="divTableCell">{student.surname}</div>
+                        <div className="divTableCell">{student.stdclass}</div>
+                        <div className="divTableCell">{student.schoolStatus}</div>
+                        <div className="divTableCell">{student.stdnumber}</div>
+                        <div className="divTableCell">{student.teacher}</div>
+                        <div className="divTableCell">{student.city}</div>
+                        <div className="divTableCell">
                             <Button size="sm" color="primary"><i className="cui-calendar"></i></Button>
-                            <Button size="sm" color="primary"><i className="cui-pencil"></i></Button>
+                            <Button onClick={() => { this.setState({ editRowId: student.id, onInputIsCurrent: true, onInput: false, newRecord: false }) }} size="sm" color="primary"><i className="cui-pencil"></i></Button>
                             <Button size="sm" color="primary"><i className="cui-options"></i></Button>
-                        </td>
-                    </tr>);
+                        </div>
+                    </div>);
             })
         }
 
@@ -218,9 +296,9 @@ class StudentList extends Component {
     }
 
     newRecordRow() {
-        if (this.state.newRecord === true) {
+        if (this.state.newRecord === true && !this.state.onInputIsCurrent) {
             return (
-                <tr  >
+                <div className="divTableRow">
                     {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.name)}
                     {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.surname)}
                     {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.stdclass)}
@@ -231,12 +309,12 @@ class StudentList extends Component {
 
 
 
-                    <td>
+                    <div className="divTableCell">
                         <Button size="sm" color="primary"><i className="cui-calendar"></i></Button>
                         <Button size="sm" color="primary"><i className="cui-pencil"></i></Button>
                         <Button size="sm" color="primary"><i className="cui-options"></i></Button>
-                    </td>
-                </tr>)
+                    </div>
+                </div>)
         }
         else {
             console.log("returned null for newRecordRow")
@@ -272,7 +350,7 @@ class StudentList extends Component {
                     <Col>
                         <Card >
                             <CardHeader>
-                                <i className="fa fa-align-justify"></i> Hafizlik Ogrenci Listesi
+                                <i className="fa fa-align-justify"></i> Öğrenci Listesi
                                 <div className="card-header-actions">
                                     {/*eslint-disable-next-line*/}
                                     <a onClick={this.handleOpenModal} className="card-header-action btn btn-setting"><i className="icon-settings"></i></a>
@@ -302,7 +380,7 @@ class StudentList extends Component {
                                     >
                                         <div><UploadScreen ></UploadScreen></div>
                                         <div>
-                                            <button onClick={this.handleCloseModal}>Close Modal</button>
+                                            <button onClick={this.handleCloseModal}>Kapat</button>
                                         </div>
                                     </ReactModal>
                                     {/*eslint-disable-next-line*/}
@@ -317,7 +395,7 @@ class StudentList extends Component {
                                     <Row className="align-items-center">
                                         <Col col="3" offset-sm-1="true" sm="2" md="2" xl className="mb-3 mb-xl-0">
                                             <ButtonToolbar >
-                                                <Button id="yeniKayit" disabled={false} onClick={() => this.setState({ "newRecord": true })} size="sm" color="primary"><i className="cui-print"></i>Yeni Kayit</Button>
+                                                <Button id="yeniKayit" disabled={false} onClick={() => this.setState({ "newRecord": true, "onInputIsCurrent": false, "onInput": true })} size="sm" color="primary"><i className="cui-print"></i>Yeni Kayit</Button>
 
                                                 <Button size="sm" color="primary"><i className="cui-paperclip"></i>Kopyala</Button>
 
@@ -330,7 +408,7 @@ class StudentList extends Component {
                                         <div className="controls">
                                             <InputGroup>
                                                 <Input onChange={this.getStudents} id="appendedInputButton" size="16" type="text" />
-                                                <InputGroupAddon addonType="append">
+                                                <InputGroupAddon addonType="append" >
                                                     <Button onClick={this.getStudents} color="secondary">Git!</Button>
                                                 </InputGroupAddon>
                                             </InputGroup>
@@ -341,44 +419,41 @@ class StudentList extends Component {
 
                                 </p>
 
-                                <Table hover bordered striped responsive size="sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Ad</th>
-                                            <th>Soyad</th>
-                                            <th>Sinif</th>
-                                            <th>Durum</th>
-                                            <th>No</th>
-                                            <th>Ogretmen</th>
-                                            <th>Sehir</th>
-                                            <th>Islemler</th>
-                                            
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            this.newRecordRow()
-                                        }
-                                        {
-                                            this.fillTable(this.state.loading, stud)
+                                <div className="divTable blueTable">
+                                    <div className="divTableHeading">
+                                        <div className="divTableRow">
+                                            <div className="divTableHead">Ad</div>
+                                            <div className="divTableHead">Soyad</div>
+                                            <div className="divTableHead">Sınıf</div>
+                                            <div className="divTableHead">Durum</div>
+                                            <div className="divTableHead">No</div>
+                                            <div className="divTableHead">Öğretmen</div>
+                                            <div className="divTableHead">Şehir</div>
+                                            <div className="divTableHead">İşlemler</div>
+                                        </div>
+                                    </div>
+                                    {
+                                        this.newRecordRow()
+                                    }
+                                    {
+                                        this.fillTable(this.state.loading, stud)
+                                    }
 
 
 
-                                        }
-                                    </tbody>
-                                </Table>
-                                <nav>
-                                    <Pagination>
-                                        <PaginationItem><PaginationLink previous tag="button">Onceki</PaginationLink></PaginationItem>
-                                        <PaginationItem active>
-                                            <PaginationLink tag="button">1</PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                                        <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                                        <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                                        <PaginationItem><PaginationLink next tag="button">Sonraki</PaginationLink></PaginationItem>
-                                    </Pagination>
-                                </nav>
+                                    <nav>
+                                        <Pagination>
+                                            <PaginationItem><PaginationLink previous tag="button">Önceki</PaginationLink></PaginationItem>
+                                            <PaginationItem active>
+                                                <PaginationLink tag="button">1</PaginationLink>
+                                            </PaginationItem>
+                                            <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
+                                            <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
+                                            <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
+                                            <PaginationItem><PaginationLink next tag="button">Sonraki</PaginationLink></PaginationItem>
+                                        </Pagination>
+                                    </nav>
+                                </div>
                             </CardBody>
                         </Card>
                     </Col>
