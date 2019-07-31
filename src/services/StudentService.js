@@ -108,20 +108,21 @@ class StudentService extends Component{
           });
       }
       async updateStudent(student) {
-        console.log("StudentService.updateStudent():");
+        console.log("StudentService.createStudent():");
         console.log(student);
-        return fetch(student.link, {
-          method: "PUT",
+        return fetch(this.config.STUDENT_COLLECTION_SET_URL, {
+          method: "POST",
           mode: "cors",
           headers: {
                 "Content-Type": "application/json"
-              },
+            },
           body: JSON.stringify(student)
         })
           .then(response => {
-            if (!response.ok) {
-              this.handleResponseError(response);
+           if (!response) {
+                this.handleResponseError(response);
             }
+            console.log(response)
             return response.json();
           })
           .catch(error => {

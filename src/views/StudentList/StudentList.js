@@ -33,7 +33,7 @@ class StudentList extends Component {
             students: [],
             loading: true,
             newRecord: false,
-            newStudent: { id:"",name: "", surname: "", teacher: "", stdclass: "", stdnumber: "", schoolStatus: "", city: "" },
+            newStudent: { id: "", name: "", surname: "", teacher: "", stdclass: "", stdnumber: "", schoolStatus: "", city: "" },
             onInput: false,
             showModal: false,
             onInputIsCurrent: false,
@@ -101,28 +101,25 @@ class StudentList extends Component {
                 onInput: true,
 
             })
-        }       
+        }
         console.log("handleOnClick3")
         console.log("actual type: ")
 
         console.log("handleOnClick4")
         console.log(this.state.actualType)
     }
-    handleOnChange(type,event) {
+    handleOnChange(type, event) {
         console.log(event.target.value)
         console.log(this.state.newRecord)
         console.log(this.state.onInputIsCurrent)
-       
-        if (!this.state.newRecord && this.state.onInputIsCurrent) {
+        this.setState({
+            newStudent: { ...this.state.newStudent, [type]: event.target.value }
 
-            this.setState({
-                newStudent: { ...this.state.newStudent, [type]: event.target.value }
+        })
+        console.log(this.state.newStudent.name)
+        console.log(type)
 
-            })
-            console.log(this.state.newStudent.name)
-            console.log(type)
-        }
-       
+
     }
 
     getStudents = (event) => {
@@ -163,6 +160,22 @@ class StudentList extends Component {
         ).then(this.getStudents());
 
     }
+    updateStudent = () => {
+        console.log(`creating student: ${this.state.newStudent}`);
+        this.setState({ loading: true });
+        this.studentService.updateStudent(this.state.newStudent).then(response => {
+            console.log(`then response: ${response}`);
+            if (response.ok) {
+                console.log("response ok")
+            }
+            else
+                console.log("response false")
+            this.setState({ newRecord: false });
+
+        }
+        ).then(this.setState({ onInputIsCurrent: false })).then(this.getStudents());
+
+    }
     componentDidMount() {
         this.getStudents();
 
@@ -178,8 +191,10 @@ class StudentList extends Component {
             return (
                 <div className="divTableCell"  >
 
-                    <AutosizeInput minLength={5} minWidth={5} autoComplete onClick={() => eventClick(datatype)} autoFocus value={this.state.newStudent[datatype]}
-                        onChange={this.handleOnChange.bind(this,datatype)} onBlur={(event) => eventBlur(event, datatype)} />
+                    <AutosizeInput
+                        inputStyle={{ border: '1px solid #999', borderRadius: 3, padding: 3, fontSize: 14 }}
+                        autoComplete onClick={() => eventClick(datatype)} autoFocus value={this.state.newStudent[datatype]}
+                        onChange={this.handleOnChange.bind(this, datatype)} onBlur={(event) => eventBlur(event, datatype)} />
 
                 </div>
 
@@ -194,8 +209,10 @@ class StudentList extends Component {
                 return (
                     <div className="divTableCell" onClick={() => eventClick(datatype)} >
 
-                        <AutosizeInput autoComplete autoFocus defaultValue={this.state.newStudent[datatype]}
-                            onBlur={(event) => eventBlur(event, datatype)} />
+                        <AutosizeInput
+                            inputStyle={{ border: '1px solid #999', borderRadius: 3, padding: 3, fontSize: 14 }}
+                            autoComplete autoFocus value={this.state.newStudent[datatype]}
+                            onChange={this.handleOnChange.bind(this, datatype)} onBlur={(event) => eventBlur(event, datatype)} />
 
                     </div>
 
@@ -210,7 +227,6 @@ class StudentList extends Component {
             return (
                 <div className="divTableCell" onClick={() => eventClick(datatype)} >
                     {this.state.newStudent[datatype]}
-                    {/* {`this.state.newStudent.${datatype}`}  */}
                 </div>
             )
         }
@@ -231,7 +247,7 @@ class StudentList extends Component {
                 if (!this.state.onInput && this.state.onInputIsCurrent && this.state.editRowId === student.id) {
                     if (student.id !== this.state.newStudent.id) {//if we set the values before we should not set again to be able to change the new values
                         this.state.newStudent = student;// don't render
-                        
+
                     }
 
 
@@ -249,8 +265,8 @@ class StudentList extends Component {
 
 
                             <div className="divTableCell">
-                                <Button size="sm" color="primary"><i className="cui-check"></i></Button>
-                                <Button size="sm" color="primary"><i className="cui-circle-x"></i></Button>
+                                <Button onClick={this.updateStudent} size="sm" color="primary"><i className="cui-check"></i></Button>
+                                <Button onClick={()=> this.setState({onInputIsCurrent:false})} size="sm" color="primary"><i className="cui-circle-x"></i></Button>
                                 <Button size="sm" color="primary"><i className="cui-trash"></i></Button>
                             </div>
 
