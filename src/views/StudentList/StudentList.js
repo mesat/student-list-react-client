@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 import AutosizeInput from 'react-input-autosize';
 import {
-    Badge, Button, ButtonToolbar, Card, CardBody, CardHeader, Col, Input,
-    InputGroup, InputGroupAddon, Pagination, PaginationItem, PaginationLink, Row, Table
-} from 'reactstrap';
+    Button, ButtonToolbar, Card, CardBody, CardHeader, Col, Input,
+    InputGroup, InputGroupAddon, Pagination, PaginationItem, PaginationLink, Row
+}
+    from 'reactstrap';
 import StudentService from '../../services/StudentService';
 import "./style.css";
 import PropTypes from 'prop-types'
 import UploadScreen from './Upload/UploadScreen';
+import { connect } from 'react-redux'
+import { login,logout } from '../../redux/actions'
 
 const stdcolumntype = {
     id: '',
@@ -266,7 +269,7 @@ class StudentList extends Component {
 
                             <div className="divTableCell">
                                 <Button onClick={this.updateStudent} size="sm" color="primary"><i className="cui-check"></i></Button>
-                                <Button onClick={()=> this.setState({onInputIsCurrent:false})} size="sm" color="primary"><i className="cui-circle-x"></i></Button>
+                                <Button onClick={() => this.setState({ onInputIsCurrent: false })} size="sm" color="primary"><i className="cui-circle-x"></i></Button>
                                 <Button size="sm" color="primary"><i className="cui-trash"></i></Button>
                             </div>
 
@@ -347,18 +350,7 @@ class StudentList extends Component {
         const newRecords = this.state.newRecord;
         console.log(`stud: ${stud}`);
         console.log(`loading: ${this.state.loading}`)
-        const customStyles = {
-            content: {
-                top: '50%',
-                left: '50%',
-                right: 'auto',
-                bottom: 'auto',
-                marginRight: '-50%',
-                transform: 'translate(-50%, -50%)'
-            }
-        };
-
-
+        
 
         return (
             <div className="animated fadeIn">
@@ -430,7 +422,7 @@ class StudentList extends Component {
                                             </InputGroup>
                                         </div>
                                     </Row>
-                                    <h6></h6>
+                                    {/* <h6></h6> */}
                                     {this.newRecordButtons(newRecords)}
 
                                 </p>
@@ -481,4 +473,9 @@ class StudentList extends Component {
 }
 
 
-export default StudentList;
+
+  export default connect(
+    state => ({ isAuthenticated: state.auth.isAuthenticated }),
+    { login, logout }
+  )(StudentList);
+  

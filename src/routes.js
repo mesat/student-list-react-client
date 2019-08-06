@@ -1,5 +1,5 @@
 import React from 'react';
-
+import requireAuth from './components/requiresAuth';
 const Breadcrumbs = React.lazy(() => import('./views/Base/Breadcrumbs'));
 const Cards = React.lazy(() => import('./views/Base/Cards'));
 const Carousels = React.lazy(() => import('./views/Base/Carousels'));
@@ -36,12 +36,13 @@ const Typography = React.lazy(() => import('./views/Theme/Typography'));
 const Widgets = React.lazy(() => import('./views/Widgets/Widgets'));
 const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
+const Login = React.lazy(() => import('./views/Pages/Login/Login'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
-  { path: '/hafizlik', name: 'Hafizlik Ogrenci Listesi', component: StudentList },
+  { path: '/students', name: 'Öğrenci Listesi', component: requireAuth(StudentList)},
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
   { path: '/theme/colors', name: 'Colors', component: Colors },
   { path: '/theme/typography', name: 'Typography', component: Typography },
@@ -81,6 +82,7 @@ const routes = [
   { path: '/charts', name: 'Charts', component: Charts },
   { path: '/users', exact: true,  name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
+  { path: '/login', exact: true, name: 'Login', component: Login },
 ];
 
 export default routes;

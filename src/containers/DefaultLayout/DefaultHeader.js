@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import { AppAsideToggler, AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
 import logo from '../../assets/img/brand/logo.svg'
 import sygnet from '../../assets/img/brand/sygnet.svg'
+import { connect } from 'react-redux'
+import { login,logout } from '../../redux/actions'
 
 const propTypes = {
   children: PropTypes.node,
@@ -51,7 +53,7 @@ class DefaultHeader extends Component {
           </NavItem>
           <UncontrolledDropdown nav direction="down">
             <DropdownToggle nav>
-              <img src={'../../assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
+              <img src={'../../assets/img/avatars/8.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
             </DropdownToggle>
             <DropdownMenu right>
               <DropdownItem header tag="div" className="text-center"><strong>Account</strong></DropdownItem>
@@ -66,7 +68,7 @@ class DefaultHeader extends Component {
               <DropdownItem><i className="fa fa-file"></i> Projects<Badge color="primary">42</Badge></DropdownItem>
               <DropdownItem divider />
               <DropdownItem><i className="fa fa-shield"></i> Lock Account</DropdownItem>
-              <DropdownItem onClick={e => this.props.onLogout(e)}><i className="fa fa-lock"></i> Logout</DropdownItem>
+              <DropdownItem onClick={logout}><i className="fa fa-lock"></i> Logout</DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
         </Nav>
@@ -80,4 +82,8 @@ class DefaultHeader extends Component {
 DefaultHeader.propTypes = propTypes;
 DefaultHeader.defaultProps = defaultProps;
 
-export default DefaultHeader;
+
+export default connect(
+  state => ({ isAuthenticated: state.auth.isAuthenticated }),
+  { login, logout }
+)(DefaultHeader);

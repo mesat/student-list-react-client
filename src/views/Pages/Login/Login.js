@@ -1,10 +1,25 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { login } from "../../../redux/actions";
+
+
 
 class Login extends Component {
+  constructor(props) {
+    super(props)
+
+  }
+
   render() {
-    return (
+    if (isAuthenticated) {
+      return (
+        <Redirect to="/" />
+      )
+
+    } else return (
       <div className="app flex-row align-items-center">
         <Container>
           <Row className="justify-content-center">
@@ -33,9 +48,9 @@ class Login extends Component {
                       </InputGroup>
                       <Row>
                         <Col xs="6"><Link to="/">
-                        <Button color="primary" className="px-4">Login</Button>
-                      </Link>
-                          
+                          <Button onClick={e => { e.preventDefault(); this.props.dispatch() }} color="primary" className="px-4">Login</Button>
+                        </Link>
+
                         </Col>
                         <Col xs="6" className="text-right">
                           <Button color="link" className="px-0">Forgot password?</Button>
@@ -65,4 +80,9 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default connect(
+  state => ({
+    isAuthenticated: state.auth.isAuthenticated
+  }),
+  { login }
+)(Login);

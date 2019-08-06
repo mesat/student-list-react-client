@@ -11,7 +11,7 @@ export default {
     },
     {
       name: 'Ögrenci Listesi',
-      url: '/hafizlik',
+      url: '/studentlist',
       icon: 'icon-pencil'
     },
     {
