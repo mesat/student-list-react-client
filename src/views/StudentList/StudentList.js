@@ -11,7 +11,7 @@ import "./style.css";
 import PropTypes from 'prop-types'
 import UploadScreen from './Upload/UploadScreen';
 import { connect } from 'react-redux'
-import { login,logout } from '../../redux/actions'
+import { signin,logout } from '../../redux/actions'
 
 const stdcolumntype = {
     id: '',
@@ -476,6 +476,6 @@ class StudentList extends Component {
 
   export default connect(
     state => ({ isAuthenticated: state.auth.isAuthenticated }),
-    { login, logout }
+    { signin, logout }
   )(StudentList);
   

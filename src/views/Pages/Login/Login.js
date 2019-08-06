@@ -3,18 +3,34 @@ import { Link } from 'react-router-dom';
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { login } from "../../../redux/actions";
+import { signin } from "../../../redux/actions";
+import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
 
 
 
+const propTypes = {
+  children: PropTypes.node,
+};
+
+const defaultProps = {};
 class Login extends Component {
+
+
   constructor(props) {
     super(props)
 
   }
+  
+
 
   render() {
+    console.log(this.props)
+    const isAuthenticated = this.props.isAuthenticated;
+    console.log(`Login render started with isAuth: ${isAuthenticated}`)
+
     if (isAuthenticated) {
+      console.log(`authenticated`)
       return (
         <Redirect to="/" />
       )
@@ -47,13 +63,14 @@ class Login extends Component {
                         <Input type="password" placeholder="Password" autoComplete="current-password" />
                       </InputGroup>
                       <Row>
-                        <Col xs="6"><Link to="/">
-                          <Button onClick={e => { e.preventDefault(); this.props.dispatch() }} color="primary" className="px-4">Login</Button>
-                        </Link>
+                        <Col xs="6">
+                          <Button onClick={(e)=>{e.preventDefault();this.props.dispatch(signin())}} color="primary" className="px-4">Login</Button>
+                    
 
                         </Col>
                         <Col xs="6" className="text-right">
                           <Button color="link" className="px-0">Forgot password?</Button>
+                          
                         </Col>
                       </Row>
                     </Form>
@@ -80,9 +97,19 @@ class Login extends Component {
   }
 }
 
-export default connect(
-  state => ({
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(signin, dispatch) }
+}
+const mapStateToProps = state=>  {
+  console.log(state)
+  return {
     isAuthenticated: state.auth.isAuthenticated
-  }),
-  { login }
-)(Login);
+  };
+};
+
+Login.propTypes = propTypes;
+Login.defaultProps = defaultProps;
+
+// const mapDispatchToProps = dispatch => bindActionCreators(signin, dispatch)
+
+export default connect(mapStateToProps,mapDispatchToProps)(Login);

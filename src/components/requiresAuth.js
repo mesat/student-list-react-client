@@ -23,7 +23,7 @@ export default function (ComposedComponent) {
       const { isAuthenticated, redirect } = this.props;
 
       if (!isAuthenticated) {
-        redirect();
+        //redirect();
       }
     }
 
@@ -43,12 +43,12 @@ export default function (ComposedComponent) {
   };
   
   const mapDispatchToProps = dispatch => bindActionCreators({
-    redirect: () => push('/login')
+    //redirect: () => push('/login')
   }, dispatch)
   
 
   return connect(
     mapStateToProps, 
-    mapDispatchToProps
+    null
   )(Authenticate);
 }
