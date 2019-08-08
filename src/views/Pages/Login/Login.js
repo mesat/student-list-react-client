@@ -97,9 +97,10 @@ class Login extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(signin, dispatch) }
-}
+//not need to use dispatch https://react-redux.js.org/using-react-redux/connect-mapdispatch
+// function mapDispatchToProps(dispatch) {
+//   return { actions: bindActionCreators(signin, dispatch) }
+// }
 const mapStateToProps = state=>  {
   console.log(state)
   return {
@@ -112,4 +113,4 @@ Login.defaultProps = defaultProps;
 
 // const mapDispatchToProps = dispatch => bindActionCreators(signin, dispatch)
 
-export default connect(mapStateToProps,mapDispatchToProps)(Login);
+export default connect(mapStateToProps)(Login);

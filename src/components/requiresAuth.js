@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { bindActionCreators } from 'redux'
 import PropTypes from 'prop-types';
+import { Redirect } from "react-router-dom";
 
 export default function (ComposedComponent) {  
   class Authenticate extends React.Component {
     static propTypes = {
       isAuthenticated: PropTypes.bool,
-      redirect: PropTypes.func.isRequired
+      // redirect: PropTypes.func.isRequired
     };
 
     componentDidMount() {
@@ -20,14 +21,22 @@ export default function (ComposedComponent) {
     }
 
     _checkAndRedirect() {
-      const { isAuthenticated, redirect } = this.props;
+      // const { isAuthenticated, redirect  } = this.props;
+      const { isAuthenticated} = this.props;
+      // console.log(`isAuth: ${isAuthenticated}`)
 
-      if (!isAuthenticated) {
-        //redirect();
-      }
+      // if (!isAuthenticated) {
+        
+      // }
     }
 
     render() {
+      if (!this.isAuthenticated) {
+        return(
+          <Redirect to="/login" />
+        )
+        
+      }
       return (
         <div>
           { this.props.isAuthenticated ? <ComposedComponent {...this.props} /> : null }
@@ -42,13 +51,17 @@ export default function (ComposedComponent) {
     };
   };
   
-  const mapDispatchToProps = dispatch => bindActionCreators({
-    //redirect: () => push('/login')
-  }, dispatch)
+  // const mapDispatchToProps = dispatch => bindActionCreators({
+    
+  //   redirect: 
+  //   () => {
+  //      console.log(`push signin`);
+  //     push('/signin')}
+  //  }
+  // , dispatch)
   
 
   return connect(
-    mapStateToProps, 
-    null
+    mapStateToProps
   )(Authenticate);
 }

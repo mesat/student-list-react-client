@@ -11,7 +11,7 @@ export default {
     },
     {
       name: 'Ögrenci Listesi',
-      url: '/studentlist',
+      url: '/students',
       icon: 'icon-pencil'
     },
     {
