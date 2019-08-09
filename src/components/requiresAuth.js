@@ -22,7 +22,6 @@ export default function (ComposedComponent) {
 
     _checkAndRedirect() {
       // const { isAuthenticated, redirect  } = this.props;
-      const { isAuthenticated} = this.props;
       // console.log(`isAuth: ${isAuthenticated}`)
 
       // if (!isAuthenticated) {
@@ -31,12 +30,16 @@ export default function (ComposedComponent) {
     }
 
     render() {
-      if (!this.isAuthenticated) {
+      const { isAuthenticated} = this.props;
+      console.log(isAuthenticated)
+      if (!isAuthenticated) {
         return(
           <Redirect to="/login" />
         )
         
       }
+      console.log("ComposedComponent")
+      console.log(ComposedComponent)
       return (
         <div>
           { this.props.isAuthenticated ? <ComposedComponent {...this.props} /> : null }
