@@ -19,3 +19,11 @@ https://coreui.io/react/
 https://coreui.io/demo/
 
 https://github.com/JedWatson/react-input-autosize
+
+https://react-redux.js.org/using-react-redux/connect-mapdispatch
+
+https://www.codementor.io/sahilmittal/using-higher-order-components-for-authenticated-routing-i1hcp6pc6
+
+https://codesandbox.io/s/protected-routes-react-router-v4-df99t
+
+https://codesandbox.io/s/github/reduxjs/redux/tree/master/examples/shopping-cart
