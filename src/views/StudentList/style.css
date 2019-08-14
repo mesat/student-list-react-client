@@ -1,6 +1,13 @@
 * {
     box-sizing: border-box;
   }
+  .button-group{
+    display:"inline-flex"
+  }
+  .button-single{
+    min-width:33%;
+    
+  }
 
 
    .input {

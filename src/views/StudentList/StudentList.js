@@ -11,7 +11,7 @@ import "./style.css";
 import PropTypes from 'prop-types'
 import UploadScreen from './Upload/UploadScreen';
 import { connect } from 'react-redux'
-import { signin,logout } from '../../redux/actions'
+import { signin, logout } from '../../redux/actions'
 
 const stdcolumntype = {
     id: '',
@@ -192,10 +192,10 @@ class StudentList extends Component {
             console.log(`oninputiscurrent in Form: ${onInputIsCurrent}`)
 
             return (
-                <div className="divTableCell"  >
+                <div className="table-flex-row" role="cell"  >
 
                     <AutosizeInput
-                        inputStyle={{ border: '1px solid #999', borderRadius: 3, padding: 3, fontSize: 14 }}
+                        inputStyle={{ minWidth: 23, border: '1px solid #999', borderRadius: 3, padding: 3, fontSize: 14 }}
                         autoComplete onClick={() => eventClick(datatype)} autoFocus value={this.state.newStudent[datatype]}
                         onChange={this.handleOnChange.bind(this, datatype)} onBlur={(event) => eventBlur(event, datatype)} />
 
@@ -210,10 +210,10 @@ class StudentList extends Component {
                 console.log("Form creation datatype: ")
                 console.log(datatype)
                 return (
-                    <div className="divTableCell" onClick={() => eventClick(datatype)} >
+                    <div className="table-flex-row" role="cell" onClick={() => eventClick(datatype)} >
 
                         <AutosizeInput
-                            inputStyle={{ border: '1px solid #999', borderRadius: 3, padding: 3, fontSize: 14 }}
+                            inputStyle={{ minWidth: 23, border: '1px solid #999', borderRadius: 3, padding: 3, fontSize: 14 }}
                             autoComplete autoFocus value={this.state.newStudent[datatype]}
                             onChange={this.handleOnChange.bind(this, datatype)} onBlur={(event) => eventBlur(event, datatype)} />
 
@@ -228,7 +228,7 @@ class StudentList extends Component {
             //console.log(`this.state.newStudent.${datatype}`)
             console.log(this.state.newStudent)
             return (
-                <div className="divTableCell" onClick={() => eventClick(datatype)} >
+                <div className="table-flex-row" role="cell" onClick={() => eventClick(datatype)} >
                     {this.state.newStudent[datatype]}
                 </div>
             )
@@ -256,7 +256,7 @@ class StudentList extends Component {
 
 
                     return (
-                        <div className="divTableRow" key={student.id}>
+                        <div className="flex-table row" role="rowgroup" key={student.id}>
                             {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.name, this.state.onInputIsCurrent)}
                             {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.surname, this.state.onInputIsCurrent)}
                             {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.stdclass, this.state.onInputIsCurrent)}
@@ -267,10 +267,10 @@ class StudentList extends Component {
 
 
 
-                            <div className="divTableCell">
-                                <Button onClick={this.updateStudent} size="sm" color="primary"><i className="cui-check"></i></Button>
-                                <Button onClick={() => this.setState({ onInputIsCurrent: false })} size="sm" color="primary"><i className="cui-circle-x"></i></Button>
-                                <Button size="sm" color="primary"><i className="cui-trash"></i></Button>
+                            <div className="table-flex-row button-group" role="cell">
+                                <Button className="cui-check button-single m-0 btn-sm p-0" onClick={this.updateStudent} color="primary"></Button>
+                                <Button className="cui-circle-x button-single m-0 btn-sm p-0" onClick={() => this.setState({ onInputIsCurrent: false })} color="primary"></Button>
+                                <Button className="cui-trash button-single m-0 btn-sm p-0" color="primary"></Button>
                             </div>
 
                         </div>);
@@ -278,18 +278,21 @@ class StudentList extends Component {
 
                 return (
 
-                    <div className="divTableRow" key={student.id}>
-                        <div className="divTableCell">{student.name}</div>
-                        <div className="divTableCell">{student.surname}</div>
-                        <div className="divTableCell">{student.stdclass}</div>
-                        <div className="divTableCell">{student.schoolStatus}</div>
-                        <div className="divTableCell">{student.stdnumber}</div>
-                        <div className="divTableCell">{student.teacher}</div>
-                        <div className="divTableCell">{student.city}</div>
-                        <div className="divTableCell">
-                            <Button size="sm" color="primary"><i className="cui-calendar"></i></Button>
-                            <Button onClick={() => { this.setState({ editRowId: student.id, onInputIsCurrent: true, onInput: false, newRecord: false }) }} size="sm" color="primary"><i className="cui-pencil"></i></Button>
-                            <Button size="sm" color="primary"><i className="cui-options"></i></Button>
+                    <div className="flex-table row" role="rowgroup" key={student.id}>
+                        <div className="table-flex-row" role="cell">{student.name}</div>
+                        <div className="table-flex-row" role="cell">{student.surname}</div>
+                        <div className="table-flex-row" role="cell">{student.stdclass}</div>
+                        <div className="table-flex-row" role="cell">{student.schoolStatus}</div>
+                        <div className="table-flex-row" role="cell">{student.stdnumber}</div>
+                        <div className="table-flex-row" role="cell">{student.teacher}</div>
+                        <div className="table-flex-row" role="cell">{student.city}</div>
+                        <div className="table-flex-row button-group" role="cell">
+
+
+                            <Button className="cui-calendar button-single m-0 btn-sm p-0" color="primary" ></Button>
+                            <Button className="cui-pencil button-single m-0 btn-sm p-0" onClick={() => { this.setState({ editRowId: student.id, onInputIsCurrent: true, onInput: false, newRecord: false }) }} color="primary"></Button>
+                            <Button className="cui-options button-single m-0 btn-sm p-0" color="primary"></Button>
+
                         </div>
                     </div>);
             })
@@ -317,7 +320,7 @@ class StudentList extends Component {
     newRecordRow() {
         if (this.state.newRecord === true && !this.state.onInputIsCurrent) {
             return (
-                <div className="divTableRow">
+                <div className="flex-table row" role="rowgroup" >
                     {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.name)}
                     {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.surname)}
                     {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.stdclass)}
@@ -328,10 +331,10 @@ class StudentList extends Component {
 
 
 
-                    <div className="divTableCell">
-                        <Button size="sm" color="primary"><i className="cui-calendar"></i></Button>
-                        <Button size="sm" color="primary"><i className="cui-pencil"></i></Button>
-                        <Button size="sm" color="primary"><i className="cui-options"></i></Button>
+                    <div className="table-flex-row button-group" role="cell">
+                        <Button  disabled className="cui-calendar button-single m-0 btn-sm p-0" color="primary"></Button>
+                        <Button disabled className="cui-pencil button-single m-0 btn-sm p-0" color="primary"></Button>
+                        <Button disabled className="cui-options button-single m-0 btn-sm p-0" color="primary"></Button>
                     </div>
                 </div>)
         }
@@ -350,7 +353,7 @@ class StudentList extends Component {
         const newRecords = this.state.newRecord;
         console.log(`stud: ${stud}`);
         console.log(`loading: ${this.state.loading}`)
-        
+
 
         return (
             <div className="animated fadeIn">
@@ -361,16 +364,16 @@ class StudentList extends Component {
                                 <i className="fa fa-align-justify"></i> Öğrenci Listesi
                                 <div className="card-header-actions">
                                     {/*eslint-disable-next-line*/}
-                                    <a onClick={this.handleOpenModal} className="card-header-action btn btn-setting"><i className="icon-settings"></i></a>
+                                    <a onClick={this.handleOpenModal} className="card-header-action btn btn-setting"><i className="fa fa-cloud-upload fa-lg mt-2"></i>Toplu Yükle</a>
                                     <ReactModal
                                         isOpen={this.state.showModal}
                                         contentLabel="Minimal Modal Example"
                                         onRequestClose={this.handleCloseModal}
                                         shouldCloseOnOverlayClick={true}
                                         style={{
-                                            overlay: {
-                                                backgroundColor: 'papayawhip'
-                                            },
+                                            // overlay: {
+                                            //     backgroundColor: 'papayawhip'
+                                            // },
                                             content: {
                                                 color: 'lightsteelblue',
                                                 top: '50%',
@@ -379,7 +382,7 @@ class StudentList extends Component {
                                                 bottom: 'auto',
                                                 marginRight: '-50%',
                                                 transform: 'translate(-50%, -50%)',
-                                                height: '500px', // <-- This sets the height
+                                                height: `auto`, // <-- This sets the height
                                                 overlfow: 'scroll' // <-
                                             }
                                         }}
@@ -387,14 +390,14 @@ class StudentList extends Component {
 
                                     >
                                         <div><UploadScreen ></UploadScreen></div>
-                                        <div>
+                                        {/* <div>
                                             <button onClick={this.handleCloseModal}>Kapat</button>
-                                        </div>
+                                        </div> */}
                                     </ReactModal>
                                     {/*eslint-disable-next-line*/}
-                                    <a onClick={this.handleCloseModal} className="card-header-action btn btn-minimize" data-target="#collapseExample" onClick={this.toggle}><i className="icon-arrow-up"></i></a>
+                                    {/* <a onClick={this.handleCloseModal} className="card-header-action btn btn-minimize" data-target="#collapseExample" onClick={this.toggle}><i className="icon-arrow-up"></i></a> */}
                                     {/*eslint-disable-next-line*/}
-                                    <a onClick={this.createModal} className="card-header-action btn btn-close" ><i className="icon-close"></i></a>
+                                    {/* <a onClick={this.createModal} className="card-header-action btn btn-close" ><i className="icon-close"></i></a> */}
 
                                 </div>
                             </CardHeader>
@@ -402,8 +405,8 @@ class StudentList extends Component {
                                 <p>
                                     <Row className="align-items-center">
                                         <Col col="3" offset-sm-1="true" sm="2" md="2" xl className="mb-3 mb-xl-0">
-                                            <ButtonToolbar >
-                                                <Button id="yeniKayit" disabled={false} onClick={() => this.setState({ "newRecord": true, "onInputIsCurrent": false, "onInput": true })} size="sm" color="primary"><i className="cui-print"></i>Yeni Kayit</Button>
+                                            <ButtonToolbar role="rowgroup">
+                                                <Button id="yeniKayit" disabled={false} onClick={() => this.setState({ "newRecord": true, "onInputIsCurrent": false, "onInput": true })} size="sm" color="primary"><i className="fa fa-id-badge fa-lg mt-2"></i>Yeni Kayit</Button>
 
                                                 <Button size="sm" color="primary"><i className="cui-paperclip"></i>Kopyala</Button>
 
@@ -427,18 +430,16 @@ class StudentList extends Component {
 
                                 </p>
 
-                                <div className="divTable blueTable">
-                                    <div className="divTableHeading">
-                                        <div className="divTableRow">
-                                            <div className="divTableHead">Ad</div>
-                                            <div className="divTableHead">Soyad</div>
-                                            <div className="divTableHead">Sınıf</div>
-                                            <div className="divTableHead">Durum</div>
-                                            <div className="divTableHead">No</div>
-                                            <div className="divTableHead">Öğretmen</div>
-                                            <div className="divTableHead">Şehir</div>
-                                            <div className="divTableHead">İşlemler</div>
-                                        </div>
+                                <div className="table-container" role="table" aria-label="Destinations">
+                                    <div className="flex-table header" role="rowgroup">
+                                        <div className="table-flex-row" role="columnheader">Ad</div>
+                                        <div className="table-flex-row" role="columnheader">Soyad</div>
+                                        <div className="table-flex-row" role="columnheader">Sınıf</div>
+                                        <div className="table-flex-row" role="columnheader">Durum</div>
+                                        <div className="table-flex-row" role="columnheader">No</div>
+                                        <div className="table-flex-row" role="columnheader">Öğretmen</div>
+                                        <div className="table-flex-row" role="columnheader">Şehir</div>
+                                        <div className="table-flex-row" role="columnheader">İşlemler</div>
                                     </div>
                                     {
                                         this.newRecordRow()
@@ -449,19 +450,19 @@ class StudentList extends Component {
 
 
 
-                                    <nav>
-                                        <Pagination>
-                                            <PaginationItem><PaginationLink previous tag="button">Önceki</PaginationLink></PaginationItem>
-                                            <PaginationItem active>
-                                                <PaginationLink tag="button">1</PaginationLink>
-                                            </PaginationItem>
-                                            <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                                            <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                                            <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                                            <PaginationItem><PaginationLink next tag="button">Sonraki</PaginationLink></PaginationItem>
-                                        </Pagination>
-                                    </nav>
                                 </div>
+                                <div><nav>
+                                    <Pagination>
+                                        <PaginationItem><PaginationLink previous tag="button">Önceki</PaginationLink></PaginationItem>
+                                        <PaginationItem active>
+                                            <PaginationLink tag="button">1</PaginationLink>
+                                        </PaginationItem>
+                                        <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
+                                        <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
+                                        <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
+                                        <PaginationItem><PaginationLink next tag="button">Sonraki</PaginationLink></PaginationItem>
+                                    </Pagination>
+                                </nav></div>
                             </CardBody>
                         </Card>
                     </Col>
@@ -474,8 +475,8 @@ class StudentList extends Component {
 
 
 
-  export default connect(
+export default connect(
     state => ({ isAuthenticated: state.auth.isAuthenticated }),
     { signin, logout }
-  )(StudentList);
-  
+)(StudentList);
+

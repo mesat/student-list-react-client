@@ -107,7 +107,7 @@ class Upload extends Component {
             this.setState({ files: [], successfullUploaded: false })
           }
         >
-          Clear
+          Temizle
         </button>
       );
     } else {
@@ -116,7 +116,7 @@ class Upload extends Component {
           disabled={this.state.files.length < 0 || this.state.uploading}
           onClick={this.uploadFiles}
         >
-          Upload
+          Yükle
         </button>
       );
     }
@@ -125,7 +125,7 @@ class Upload extends Component {
   render() {
     return (
       <div className="Upload">
-        <span className="Title">Upload Files</span>
+        <span className="Title">Excel'den Veri Aktarımı</span>
         <div className="Content">
           <div>
             <Dropzone
