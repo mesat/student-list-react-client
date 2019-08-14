@@ -29,3 +29,6 @@ https://www.codementor.io/sahilmittal/using-higher-order-components-for-authenti
 https://codesandbox.io/s/protected-routes-react-router-v4-df99t
 
 https://codesandbox.io/s/github/reduxjs/redux/tree/master/examples/shopping-cart
+
+https://getbootstrap.com/docs/4.0/utilities/spacing/
+https://www.computerhope.com/issues/ch001709.htm
