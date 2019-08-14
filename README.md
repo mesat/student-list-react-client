@@ -5,6 +5,8 @@
 https://www.callicoder.com/spring-boot-file-upload-download-rest-api-example/
 
 https://malcoded.com/posts/react-file-upload/
+https://malcoded.com/posts/react-dropzone/
+https://github.com/LukasMarx/react-dropzone
 
 https://github.com/reactjs/react-modal/issues/102
 
