@@ -32,3 +32,5 @@ https://codesandbox.io/s/github/reduxjs/redux/tree/master/examples/shopping-cart
 
 https://getbootstrap.com/docs/4.0/utilities/spacing/
 https://www.computerhope.com/issues/ch001709.htm
+
+https://github.com/bernabe9/redux-react-session/tree/master/examples/react-router-v4-example used for session management
