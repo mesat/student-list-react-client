@@ -186,6 +186,8 @@
   .blueTable.outerTableFooter .tableFootStyle {
     padding: 3px 5px; 
   }
+
+
   /* DivTable.com */
   .divTable{ display: table; }
   .divTableRow { display: table-row; }
@@ -195,3 +197,21 @@
   .divTableFoot { display: table-footer-group;}
   .divTableBody { display: table-row-group;}
   
+
+  .btn-sm, .btn-group-sm > .btn {
+    border-radius: 0;
+    border-right: 1px solid #239fcb;
+}
+
+.btn-sm, .btn-group-sm > .btn {
+  border-radius: 0;
+  border-right: 1px solid #239fcb;
+}
+
+.ReactModal__Overlay{
+  z-index: 1001;
+}
+.main_list .row {
+  margin-left: 0;
+  margin-right: 0;
+}

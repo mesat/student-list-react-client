@@ -10,15 +10,23 @@ class StudentService extends Component{
         this.config = new Configuration();
         console.log("constructor finish");
       }
-      async retrieveStudents(name) {
+      async retrieveStudents(name,page,limit) {
         
         
         let parameters = "?";
+        if (page===undefined ) {
+          page = "0"
+          
+        }
+        if(limit === undefined){
+          limit = 10;
+        }
+        parameters+=`p=${page}&l=${limit}`
         if (name!==undefined){
           if (isNaN(name))
-          parameters+=`name=${name}`
+          parameters+=`&name=${name}`
           else
-          parameters+=`number=${name}`
+          parameters+=`&number=${name}`
         }
         let url = this.config.STUDENT_COLLECTION_URL;
         if (parameters!=="?"){

@@ -7,7 +7,7 @@ import {
 }
     from 'reactstrap';
 import StudentService from '../../services/StudentService';
-import "./style.css";
+import "./StudentList.css";
 import PropTypes from 'prop-types'
 import UploadScreen from './Upload/UploadScreen';
 import { connect } from 'react-redux'
@@ -29,6 +29,7 @@ class StudentList extends Component {
 
     constructor(props) {
         super(props)
+        this.pageSize = 50;
 
         this.state = {
             stdcolumntype: PropTypes.oneOf(['id', 'name', 'surname', 'teacher', 'stdclass', 'stdnumber', 'schoolStatus', 'city']),
@@ -40,17 +41,56 @@ class StudentList extends Component {
             onInput: false,
             showModal: false,
             onInputIsCurrent: false,
-            editRowId: ""
+            editRowId: "",
+            currentPage: 0,
+            totalCount: 50,
+            //pagesCount : Math.ceil(this.state.totalCount / this.pageSize)
+
         }
         this.handleOnClick = this.handleOnClick.bind(this)
         this.handleOnBlur = this.handleOnBlur.bind(this)
         this.handleOpenModal = this.handleOpenModal.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
+        this.handlePageClick = this.handlePageClick.bind(this);
         console.log('constructr')
         this.studentService = new StudentService();
 
 
+    }
+    handlePageClick(e, index) {
+        e.preventDefault();
+
+        console.log(index)
+
+        this.setState({
+            currentPage: index
+        }, () => this.pageClick());
+
+    }
+    pageClick() {
+
+        console.log(`currentPage: ${this.state.currentPage}, pageSize: ${this.pageSize}`)
+        this.getStudents(undefined, this.state.currentPage, this.pageSize)
+        // this.incrementPages();
+
+    }
+    incrementPages() {
+
+        //check if the last page is full (indicates that there may be more data)
+        //increment the totalCount if the condition is true
+        console.log(`currentPage: ${this.state.currentPage} , page: ${Math.ceil(this.state.totalCount / this.pageSize) - 1}`)
+        if (this.state.currentPage >= Math.ceil(this.state.totalCount / this.pageSize) - 1) {
+            console.log(`stdLength: ${this.state.students.length} , pageSize: ${this.pageSize}`)
+            if (this.state.students.length >= this.pageSize) {
+                this.setState((state) => ({ totalCount: state.totalCount + this.pageSize * 1 }), () => {
+                    console.log(`totalCount: ${this.state.totalCount}`)
+                });
+
+
+            }
+
+        }
     }
 
     handleOpenModal() {
@@ -125,18 +165,34 @@ class StudentList extends Component {
 
     }
 
-    getStudents = (event) => {
+    getStudents = (event, page, limit) => {
         console.log(`loading: ${this.state.loading}`)
-        console.log(event)
+        console.log(`getStudents event: ${event}`)
         console.log(`getStudent event.target.value: ${event}`)
-        this.setState({ loading: true })
-        this.studentService.retrieveStudents(event === undefined ? event : event.target.value).then(students => {
+        console.log(`currentPage: ${this.state.currentPage}, pageSize: ${this.pageSize} , page: ${page},limit: ${limit}`)
+        if (page === undefined) {
+            page = "0"
+
+        }
+        if (limit === undefined) {
+            limit = 10;
+        }
+        this.setState({ loading: true },
+            this.retriveStudents(event, page, limit)
+        )
+    }
+    retriveStudents(event, page, limit) {
+        this.studentService.retrieveStudents(event === undefined ? event : event.target.value, page, limit).then(students => {
             console.log(`loading: ${this.state.loading}`)
             console.log(`retrieved students: ${students}`)
 
             if (students) {
-                this.setState({ students: students });
-                this.setState({ loading: false });
+                this.setState({ students: students }, () => {
+                    this.setState({ loading: false },()=>{
+                        this.incrementPages();
+                    });
+
+                });
 
             }
             console.log(`this.state.students: ${this.state.students}`)
@@ -180,7 +236,7 @@ class StudentList extends Component {
 
     }
     componentDidMount() {
-        this.getStudents();
+        this.getStudents(undefined,this.state.currentPage,this.pageSize);
 
         ReactModal.setAppElement('#mainclass1')
 
@@ -332,7 +388,7 @@ class StudentList extends Component {
 
 
                     <div className="table-flex-row button-group" role="cell">
-                        <Button  disabled className="cui-calendar button-single m-0 btn-sm p-0" color="primary"></Button>
+                        <Button disabled className="cui-calendar button-single m-0 btn-sm p-0" color="primary"></Button>
                         <Button disabled className="cui-pencil button-single m-0 btn-sm p-0" color="primary"></Button>
                         <Button disabled className="cui-options button-single m-0 btn-sm p-0" color="primary"></Button>
                     </div>
@@ -351,12 +407,13 @@ class StudentList extends Component {
 
         const stud = this.state.students;
         const newRecords = this.state.newRecord;
+        const { currentPage } = this.state;
         console.log(`stud: ${stud}`);
         console.log(`loading: ${this.state.loading}`)
 
 
         return (
-            <div className="animated fadeIn">
+            <div className="main_list animated fadeIn">
                 <Row  >
                     <Col>
                         <Card >
@@ -452,15 +509,46 @@ class StudentList extends Component {
 
                                 </div>
                                 <div><nav>
-                                    <Pagination>
-                                        <PaginationItem><PaginationLink previous tag="button">Önceki</PaginationLink></PaginationItem>
+                                    {/* <Pagination  >
+                                        <PaginationItem ><PaginationLink previous tag="button">Önceki</PaginationLink></PaginationItem>
                                         <PaginationItem active>
                                             <PaginationLink tag="button">1</PaginationLink>
                                         </PaginationItem>
                                         <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
                                         <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
                                         <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                                        <PaginationItem><PaginationLink next tag="button">Sonraki</PaginationLink></PaginationItem>
+                                        <PaginationItem><PaginationLink href="#/dashboard" next tag="button">Sonraki</PaginationLink></PaginationItem>
+                                    </Pagination> */}
+                                    <Pagination aria-label="Page navigation example">
+
+                                        <PaginationItem disabled={currentPage <= 0}>
+
+                                            <PaginationLink
+                                                onClick={e => this.handlePageClick(e, currentPage - 1)}
+                                                previous
+                                                href="#"
+                                            />
+
+                                        </PaginationItem>
+
+                                        {[...Array(Math.ceil(this.state.totalCount / this.pageSize))].map((page, i) =>
+                                            <PaginationItem active={i === currentPage} key={i}>
+                                                <PaginationLink onClick={e => this.handlePageClick(e, i)} href="#">
+                                                    {i + 1}
+                                                </PaginationLink>
+                                            </PaginationItem>
+                                        )}
+
+                                        <PaginationItem disabled={currentPage >= Math.ceil(this.state.totalCount / this.pageSize) - 1}>
+
+                                            <PaginationLink
+                                                onClick={e => this.handlePageClick(e, currentPage + 1)}
+                                                next
+                                                href="#"
+                                            />
+
+                                        </PaginationItem>
+
                                     </Pagination>
                                 </nav></div>
                             </CardBody>
