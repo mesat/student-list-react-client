@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { signin } from "../../../redux/actions";
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import * as sessionActions from '../../../redux/actions';
 
 
 
@@ -16,20 +17,52 @@ const propTypes = {
 const defaultProps = {};
 class Login extends Component {
 
+  constructor(props, context) {
+    super(props, context);
 
-  constructor(props) {
-    super(props)
+    this.state = {
+      user: {
+        email: '',
+        password: ''
+      },
+      authenticated:false
+    };
 
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
-  
+
+  onSubmit(history) {
+    const { user } = this.state;
+    const { login } = this.props.actions;
+    console.log(login)
+    login(user, history);
+  }
+
+  onChange(e) {
+    const { value, name } = e.target;
+    const { user } = this.state;
+    user[name] = value;
+    this.setState({ user });
+  }
 
 
   render() {
+    const { user: { email, password },authenticated } = this.state;
     console.log(this.props)
-    const isAuthenticated = this.props.isAuthenticated;
-    console.log(`Login render started with isAuth: ${isAuthenticated}`)
+    // const isAuthenticated = this.props.isAuthenticated;
+    console.log(`Login render started with isAuth: ${authenticated}`)
 
-    if (isAuthenticated) {
+
+    const SubmitButton = withRouter(({ history }) => (
+      <Button
+        onClick={() => this.onSubmit(history)}
+        color="primary" 
+        className="px-4">Giriş Yap
+      </Button>
+    ));
+
+    if (authenticated) {
       console.log(`authenticated`)
       return (
         <Redirect to="/" />
@@ -52,7 +85,15 @@ class Login extends Component {
                             <i className="icon-user"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input type="text" placeholder="Username" autoComplete="username" />
+                        <Input
+                          name="email"
+                          value={email}
+                          label="Email"
+                          type="email"
+                          onChange={this.onChange}
+                          placeholder="Username"
+                          autoComplete="username"
+                        />
                       </InputGroup>
                       <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">
@@ -60,17 +101,25 @@ class Login extends Component {
                             <i className="icon-lock"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input type="password" placeholder="Password" autoComplete="current-password" />
+                        <Input
+                          name="password"
+                          value={password}
+                          label="Password"
+                          onChange={this.onChange}
+                          type="password"
+                          placeholder="Password"
+                          autoComplete="current-password"
+                        />
                       </InputGroup>
                       <Row>
                         <Col xs="6">
-                          <Button onClick={(e)=>{e.preventDefault();this.props.dispatch(signin())}} color="primary" className="px-4">Login</Button>
-                    
+                          {/* <Button onClick={(e) => { e.preventDefault(); this.props.dispatch(signin()) }} color="primary" className="px-4">Login</Button> */}
+                          <SubmitButton/>
 
                         </Col>
                         <Col xs="6" className="text-right">
                           <Button color="link" className="px-0">Forgot password?</Button>
-                          
+
                         </Col>
                       </Row>
                     </Form>
@@ -97,20 +146,35 @@ class Login extends Component {
   }
 }
 
-//not need to use dispatch https://react-redux.js.org/using-react-redux/connect-mapdispatch
-// function mapDispatchToProps(dispatch) {
-//   return { actions: bindActionCreators(signin, dispatch) }
-// }
-const mapStateToProps = state=>  {
-  console.log(state)
+// //not need to use dispatch https://react-redux.js.org/using-react-redux/connect-mapdispatch
+// // function mapDispatchToProps(dispatch) {
+// //   return { actions: bindActionCreators(signin, dispatch) }
+// // }
+// const mapStateToProps = state => {
+//   console.log(state)
+//   return {
+//     isAuthenticated: state.auth.isAuthenticated
+//   };
+// };
+
+// Login.propTypes = propTypes;
+// Login.defaultProps = defaultProps;
+
+// // const mapDispatchToProps = dispatch => bindActionCreators(signin, dispatch)
+
+// export default connect(mapStateToProps)(Login);
+
+
+const { object } = PropTypes;
+
+Login.propTypes = {
+  actions: object.isRequired
+};
+
+const mapDispatch = (dispatch) => {
   return {
-    isAuthenticated: state.auth.isAuthenticated
+    actions: bindActionCreators(sessionActions, dispatch)
   };
 };
 
-Login.propTypes = propTypes;
-Login.defaultProps = defaultProps;
-
-// const mapDispatchToProps = dispatch => bindActionCreators(signin, dispatch)
-
-export default connect(mapStateToProps)(Login);
+export default connect(null, mapDispatch)(Login);

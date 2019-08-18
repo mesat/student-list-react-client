@@ -9,6 +9,8 @@ import sygnet from '../../assets/img/brand/sygnet.svg'
 import { connect } from 'react-redux'
 import { logout } from '../../redux/actions'
 import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router-dom';
+import * as sessionActions from '../../redux/actions';
 
 const propTypes = {
   children: PropTypes.node,
@@ -19,11 +21,27 @@ const defaultProps = {};
 class DefaultHeader extends Component {
   constructor(props){
     super(props)
+
+    this.onSubmit = this.onSubmit.bind(this);
   }
+
+
+onSubmit(history) {  
+  const { logout } = this.props.actions;
+  console.log(logout)
+  logout(history);
+}
   render() {
 
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
+    const SubmitItem = withRouter(({ history }) => (
+      <DropdownItem
+        onClick={() => this.onSubmit(history)}
+        className="px-4"><i className="fa fa-lock"></i> Logout
+      </DropdownItem>
+    ));
+
 
     return (
       <React.Fragment>
@@ -72,7 +90,8 @@ class DefaultHeader extends Component {
               <DropdownItem><i className="fa fa-file"></i> Projects<Badge color="primary">42</Badge></DropdownItem>
               <DropdownItem divider />
               <DropdownItem><i className="fa fa-shield"></i> Lock Account</DropdownItem>
-              <DropdownItem onClick={(e) => {e.preventDefault();this.props.dispatch(logout())}}><i className="fa fa-lock"></i> Logout</DropdownItem>
+              {/* <DropdownItem onClick={(e) => {e.preventDefault();this.props.dispatch(logout())}}><i className="fa fa-lock"></i> Logout</DropdownItem> */}
+              <SubmitItem/>
             </DropdownMenu>
           </UncontrolledDropdown>
         </Nav>
@@ -83,10 +102,25 @@ class DefaultHeader extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(logout, dispatch) }
-}
-DefaultHeader.propTypes = propTypes;
-DefaultHeader.defaultProps = defaultProps;
 
-export default connect(mapDispatchToProps)(DefaultHeader);
+const { object } = PropTypes;
+
+DefaultHeader.propTypes = {
+  actions: object.isRequired
+};
+
+const mapDispatch = (dispatch) => {
+  return {
+    actions: bindActionCreators(sessionActions, dispatch)
+  };
+};
+
+export default connect(null, mapDispatch)(DefaultHeader);
+
+// function mapDispatchToProps(dispatch) {
+//   return { actions: bindActionCreators(logout, dispatch) }
+// }
+// DefaultHeader.propTypes = propTypes;
+// DefaultHeader.defaultProps = defaultProps;
+
+// export default connect(mapDispatchToProps)(DefaultHeader);

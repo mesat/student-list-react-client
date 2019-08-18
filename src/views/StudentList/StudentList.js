@@ -11,7 +11,6 @@ import "./StudentList.css";
 import PropTypes from 'prop-types'
 import UploadScreen from './Upload/UploadScreen';
 import { connect } from 'react-redux'
-import { signin, logout } from '../../redux/actions'
 
 const stdcolumntype = {
     id: '',
@@ -43,7 +42,7 @@ class StudentList extends Component {
             onInputIsCurrent: false,
             editRowId: "",
             currentPage: 0,
-            totalCount: 50,
+            totalCount: 150,
             //pagesCount : Math.ceil(this.state.totalCount / this.pageSize)
 
         }
@@ -87,8 +86,15 @@ class StudentList extends Component {
                     console.log(`totalCount: ${this.state.totalCount}`)
                 });
 
-
             }
+        }
+
+        console.log(`students length: ${this.state.students.length}`)
+        if (this.state.students.length === 0) {
+            this.setState((state) => ({ totalCount: state.totalCount- (this.state.totalCount - this.state.currentPage*this.pageSize) }), () => {
+                console.log(`totalCount: ${this.state.totalCount}`)
+            });
+
 
         }
     }
@@ -565,6 +571,6 @@ class StudentList extends Component {
 
 export default connect(
     state => ({ isAuthenticated: state.auth.isAuthenticated }),
-    { signin, logout }
+    null
 )(StudentList);
 
