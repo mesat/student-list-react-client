@@ -6,4 +6,6 @@ export const SET_FILTER = "SET_FILTER";
 
 export const CURRENT_PAGE = "CUURENT_PAGE";
 export const PAGE_SIZE = "PAGE_SIZE";
-export const TOTAL_COUNT ="TOTAL_COUNT"
+export const TOTAL_COUNT ="TOTAL_COUNT";
+
+export const UPLOAD_RESPONSE = "UPLOAD_RESPONSE";

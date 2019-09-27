@@ -1,7 +1,12 @@
 import React, { Component } from "react";
-import Dropzone from "../dropzone/Dropzone";
+import Dropzone from "../dropzone";
 import "./Upload.css";
-import Progress from "../progress/Progress";
+import Progress from "../progress";
+import * as upload from '../../../../redux/actions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from "redux";
+import PropTypes from 'prop-types';
+import { request } from "https";
 
 class Upload extends Component {
   constructor(props) {
@@ -26,10 +31,19 @@ class Upload extends Component {
   }
 
   async uploadFiles() {
+    console.log (`upload actions: ${this.props.actions}`)
+    const { upload } = this.props.actions;
     this.setState({ uploadProgress: {}, uploading: true });
     const promises = [];
     this.state.files.forEach(file => {
-      promises.push(this.sendRequest(file));
+      console.log(`starting upload file`)
+      promises.push(this.sendRequest(file).then((result) => 
+      {
+        console.log (`file upload result:`)
+        console.log(result)
+        upload(result)
+        console.log (`file upload result: ${result}`)
+      }));
     });
     try {
       await Promise.all(promises);
@@ -37,12 +51,14 @@ class Upload extends Component {
       this.setState({ successfullUploaded: true, uploading: false });
       console.log(`successfully uploaded: ${this.state.successfullUploaded} uploading ${this.state.uploading}`)
     } catch (e) {
-      // Not Production ready! Do some error handling here instead...
+      
+      console.log(`error on post-uploadfiles ${e}`)
       this.setState({ successfullUploaded: true, uploading: false });
     }
   }
 
   sendRequest(file) {
+    console.log (`sending file request`)
     return new Promise((resolve, reject) => {
       const req = new XMLHttpRequest();
 
@@ -57,11 +73,24 @@ class Upload extends Component {
         }
       });
 
-      req.upload.addEventListener("load", event => {
+      req.responseType = "json"
+      req.onload = ()=>{
+        console.log(`request load eventListener started`)
         const copy = { ...this.state.uploadProgress };
         copy[file.name] = { state: "done", percentage: 100 };
         this.setState({ uploadProgress: copy });
-        resolve(req.response);
+        var jsonResponse = req.response;
+        console.log (jsonResponse)
+        resolve(jsonResponse);
+
+        console.log(`request load eventListener completed`)
+        console.log(req)
+        console.log(req.response)
+
+      }
+   
+      req.upload.addEventListener("load", event => {
+        
       });
 
       req.upload.addEventListener("error", event => {
@@ -76,7 +105,9 @@ class Upload extends Component {
 
       req.open("POST", "http://localhost:8080/upload");
       req.send(formData);
-    });
+      console.log("sendRequest finished")
+    })
+    
   }
 
   renderProgress(file) {
@@ -150,4 +181,16 @@ class Upload extends Component {
   }
 }
 
-export default Upload;
+const { object } = PropTypes;
+
+Upload.propTypes = {
+    actions: object.isRequired    
+  };
+
+  const mapDispatch = (dispatch) => {
+    return {
+      actions: bindActionCreators(upload, dispatch)
+    };
+  };
+
+export default connect(null,mapDispatch)(Upload);

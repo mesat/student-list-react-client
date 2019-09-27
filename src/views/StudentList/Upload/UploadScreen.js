@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./UploadScreen.css";
-import Upload from "./upload/Upload";
+import Upload from "./upload";
 
 class UploadScreen extends Component {
   render() {

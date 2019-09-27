@@ -10,6 +10,9 @@
   
 import { sessionService } from 'redux-react-session';
 import * as sessionApi from '../api/sessionApi';
+import { UPLOAD_RESPONSE } from './actionTypes';
+import type from 'os'
+import { Array } from 'core-js';
 
 export const login = (user, history) => {
   return () => {
@@ -37,3 +40,22 @@ export const logout = (history) => {
     });
   };
 };
+
+const uploadModel = ({ resp  }) => ({
+
+  type: UPLOAD_RESPONSE,
+  payload: {
+    response: resp, 
+    uploaded: resp===null?false:true
+    }
+}); 
+
+export const upload = (resp) => (dispatch) => {
+  console.log('response')
+
+  console.log(resp)
+  console.log(uploadModel({resp}))
+  return dispatch(uploadModel({resp}))
+}
+
+

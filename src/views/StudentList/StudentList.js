@@ -9,16 +9,22 @@ import {
 import StudentService from '../../services/StudentService';
 import "./StudentList.css";
 import PropTypes from 'prop-types'
-import UploadScreen from './Upload/UploadScreen';
+import UploadScreen from './Upload';
 import { connect } from 'react-redux'
+import Popup from "reactjs-popup";
+import { bindActionCreators } from 'redux';
+import * as upload from '../../redux/actions';
+
+
 
 const stdcolumntype = {
     id: '',
+    schoolNo: 'schoolNo',
     name: 'name',
     surname: 'surname',
     teacher: 'teacher',
     stdclass: 'stdclass',
-    stdnumber: 'stdnumber',
+    no: 'no',
     schoolstatus: 'schoolStatus',
     city: 'city'
 }
@@ -27,16 +33,18 @@ const stdcolumntype = {
 class StudentList extends Component {
 
     constructor(props) {
+
         super(props)
+        console.log('constructor starting')
         this.pageSize = 50;
 
         this.state = {
-            stdcolumntype: PropTypes.oneOf(['id', 'name', 'surname', 'teacher', 'stdclass', 'stdnumber', 'schoolStatus', 'city']),
-            actualType: PropTypes.oneOf(['id', 'name', 'surname', 'teacher', 'stdclass', 'stdnumber', 'schoolStatus', 'city']),
+            stdcolumntype: PropTypes.oneOf(['id', 'schoolNo', 'name', 'surname', 'teacher', 'stdclass', 'no', 'schoolStatus', 'city']),
+            actualType: PropTypes.oneOf(['id', 'schoolNo', 'name', 'surname', 'teacher', 'stdclass', 'no', 'schoolStatus', 'city']),
             students: [],
             loading: true,
             newRecord: false,
-            newStudent: { id: "", name: "", surname: "", teacher: "", stdclass: "", stdnumber: "", schoolStatus: "", city: "" },
+            newStudent: { id: "", schoolNo: "", name: "", surname: "", teacher: "", stdclass: "", no: "", schoolStatus: "", city: "" },
             onInput: false,
             showModal: false,
             onInputIsCurrent: false,
@@ -44,6 +52,8 @@ class StudentList extends Component {
             currentPage: 0,
             totalCount: 150,
             //pagesCount : Math.ceil(this.state.totalCount / this.pageSize)
+            open: false,
+            textResponse: ""
 
         }
         this.handleOnClick = this.handleOnClick.bind(this)
@@ -52,11 +62,26 @@ class StudentList extends Component {
         this.handleCloseModal = this.handleCloseModal.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
-        console.log('constructr')
         this.studentService = new StudentService();
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        console.log('constructor finishing')
 
 
     }
+    openModal() {
+        const { uploadResponse } = this.props
+        const textResp = JSON.stringify(uploadResponse)
+        this.setState({ textResponse: textResp });
+        this.setState({ open: true });
+
+    }
+    closeModal() {
+        const { upload } = this.props.actions;
+        upload(null)
+        this.setState({ open: false });
+    }
+
     handlePageClick(e, index) {
         e.preventDefault();
 
@@ -91,7 +116,7 @@ class StudentList extends Component {
 
         console.log(`students length: ${this.state.students.length}`)
         if (this.state.students.length === 0) {
-            this.setState((state) => ({ totalCount: state.totalCount- (this.state.totalCount - this.state.currentPage*this.pageSize) }), () => {
+            this.setState((state) => ({ totalCount: state.totalCount - (this.state.totalCount - this.state.currentPage * this.pageSize) }), () => {
                 console.log(`totalCount: ${this.state.totalCount}`)
             });
 
@@ -112,12 +137,11 @@ class StudentList extends Component {
 
         if (type === this.state.actualType) {
 
-            console.log("handleOnBlur1")
+            console.log("type = state.actualType")
             console.log(this.state.actualType)
-            console.log("handleOnBlur2")
             console.log(this.state.newStudent)
-            console.log(type)
-            console.log(event.target.value)
+            console.log(`type: ${type}`)
+            console.log(` handleOnBlur event.target.value ${event.target.value}`)
             if (this.state.onInputIsCurrent) {
                 this.setState({
                     newStudent: { ...this.state.newStudent, [type]: event.target.value },
@@ -130,16 +154,15 @@ class StudentList extends Component {
                     onInput: false,
                     actualType: stdcolumntype.id
                 })
-            console.log(this.state.newStudent)
-            console.log("handleOnBlur3")
-            console.log(this.state.actualType)
+            console.log(`this.state.newStudent ${this.state.newStudent}`)
+            console.log("handleOnBlur finishing")
+            console.log(`state.actualType: ${this.state.actualType}`)
         }
 
     }
     handleOnClick(type) {
-        console.log("handleOnClick1")
-        console.log("handleOnClick2")
-        console.log(type)
+        console.log("handleOnClick starting")
+        console.log(`type parameter: ${type}`)
         this.setState({
             actualType: type
 
@@ -151,22 +174,19 @@ class StudentList extends Component {
 
             })
         }
-        console.log("handleOnClick3")
-        console.log("actual type: ")
-
-        console.log("handleOnClick4")
-        console.log(this.state.actualType)
+        console.log("handleOnClick finishing")
+        console.log(`actual type: ${this.state.actualType}`)
     }
     handleOnChange(type, event) {
-        console.log(event.target.value)
-        console.log(this.state.newRecord)
-        console.log(this.state.onInputIsCurrent)
+        console.log(`handleOnChange event.target.value: ${event.target.value}`)
+        console.log(`handleOnChange state.newRecord ${this.state.newRecord}`)
+        console.log(`handleOnChange state.onInputIsCurrent ${this.state.onInputIsCurrent}`)
         this.setState({
             newStudent: { ...this.state.newStudent, [type]: event.target.value }
 
         })
-        console.log(this.state.newStudent.name)
-        console.log(type)
+        console.log(`handleOnChange state.newStudent.name ${this.state.newStudent.name}`)
+        console.log(`handleOnChange finishing`)
 
 
     }
@@ -174,7 +194,7 @@ class StudentList extends Component {
     getStudents = (event, page, limit) => {
         console.log(`loading: ${this.state.loading}`)
         console.log(`getStudents event: ${event}`)
-        console.log(`getStudent event.target.value: ${event}`)
+        console.log(`getStudents event.target.value: ${event}`)
         console.log(`currentPage: ${this.state.currentPage}, pageSize: ${this.pageSize} , page: ${page},limit: ${limit}`)
         if (page === undefined) {
             page = "0"
@@ -194,7 +214,7 @@ class StudentList extends Component {
 
             if (students) {
                 this.setState({ students: students }, () => {
-                    this.setState({ loading: false },()=>{
+                    this.setState({ loading: false }, () => {
                         this.incrementPages();
                     });
 
@@ -242,7 +262,7 @@ class StudentList extends Component {
 
     }
     componentDidMount() {
-        this.getStudents(undefined,this.state.currentPage,this.pageSize);
+        this.getStudents(undefined, this.state.currentPage, this.pageSize);
 
         ReactModal.setAppElement('#mainclass1')
 
@@ -250,11 +270,12 @@ class StudentList extends Component {
 
 
     Form(onInput, eventClick, eventBlur, datatype, onInputIsCurrent) {
+        console.log(datatype === stdcolumntype.schoolNo ? "table-flex-row-first" : "table-flex-row")
         if (onInputIsCurrent) {
             console.log(`oninputiscurrent in Form: ${onInputIsCurrent}`)
 
             return (
-                <div className="table-flex-row" role="cell"  >
+                <div className={datatype === stdcolumntype.schoolNo ? "table-flex-row-first" : "table-flex-row"} role="cell"  >
 
                     <AutosizeInput
                         inputStyle={{ minWidth: 23, border: '1px solid #999', borderRadius: 3, padding: 3, fontSize: 14 }}
@@ -267,6 +288,7 @@ class StudentList extends Component {
         }
 
         if (datatype === this.state.actualType) {
+            console.log(datatype === stdcolumntype.schoolNo ? "table-flex-row-first" : "table-flex-row")
             if (onInput) {
                 console.log(onInput)
                 console.log("Form creation datatype: ")
@@ -287,6 +309,7 @@ class StudentList extends Component {
 
         }
         else {
+            console.log(datatype === stdcolumntype.schoolNo ? "table-flex-row-first" : "table-flex-row")
             //console.log(`this.state.newStudent.${datatype}`)
             console.log(this.state.newStudent)
             return (
@@ -308,7 +331,7 @@ class StudentList extends Component {
             return stud.map((student) => {
                 // console.log(`loading: ${this.state.loading}`)
                 // console.log(`return list ${this.state.students} ${student.id}`)
-                console.log(`return list ${student.id}`)
+                //console.log(`return list ${student.id}`)
                 if (!this.state.onInput && this.state.onInputIsCurrent && this.state.editRowId === student.id) {
                     if (student.id !== this.state.newStudent.id) {//if we set the values before we should not set again to be able to change the new values
                         this.state.newStudent = student;// don't render
@@ -319,11 +342,12 @@ class StudentList extends Component {
 
                     return (
                         <div className="flex-table row" role="rowgroup" key={student.id}>
+                            {/* {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.schoolNo, this.state.onInputIsCurrent)} */}
                             {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.name, this.state.onInputIsCurrent)}
                             {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.surname, this.state.onInputIsCurrent)}
                             {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.stdclass, this.state.onInputIsCurrent)}
                             {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.schoolstatus, this.state.onInputIsCurrent)}
-                            {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.stdnumber, this.state.onInputIsCurrent)}
+                            {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.no, this.state.onInputIsCurrent)}
                             {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.teacher, this.state.onInputIsCurrent)}
                             {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.city, this.state.onInputIsCurrent)}
 
@@ -341,11 +365,31 @@ class StudentList extends Component {
                 return (
 
                     <div className="flex-table row" role="rowgroup" key={student.id}>
+                        {/* {(() => {
+                            let mouseInter = true;
+                            return (
+                                <div onMouseOver={()=>{console.log(`mouseover : ${mouseInter}`);mouseInter = true}} onMouseLeave={()=>{console.log(`mouseover : ${mouseInter}`);mouseInter = false}} className="table-flex-row-first" role="cell">{
+                                    ((mouseInter) => {
+                                        if (mouseInter) {
+                                            return (<div className="table-flex-row button-group" role="cell">
+                                                <Button className="cui-check button-single m-0 btn-sm p-0" onClick={this.updateStudent} color="primary"></Button>
+                                                <Button className="cui-circle-x button-single m-0 btn-sm p-0" onClick={() => this.setState({ onInputIsCurrent: false })} color="primary"></Button>
+                                                <Button className="cui-trash button-single m-0 btn-sm p-0" color="primary"></Button>
+                                            </div>)
+                                        }
+                                        else return (student.schoolNo)
+
+                                    }).call(mouseInter)
+
+                                }</div>
+                            )
+                        }).call()} */}
+
                         <div className="table-flex-row" role="cell">{student.name}</div>
                         <div className="table-flex-row" role="cell">{student.surname}</div>
                         <div className="table-flex-row" role="cell">{student.stdclass}</div>
                         <div className="table-flex-row" role="cell">{student.schoolStatus}</div>
-                        <div className="table-flex-row" role="cell">{student.stdnumber}</div>
+                        <div className="table-flex-row" role="cell">{student.no}</div>
                         <div className="table-flex-row" role="cell">{student.teacher}</div>
                         <div className="table-flex-row" role="cell">{student.city}</div>
                         <div className="table-flex-row button-group" role="cell">
@@ -383,11 +427,12 @@ class StudentList extends Component {
         if (this.state.newRecord === true && !this.state.onInputIsCurrent) {
             return (
                 <div className="flex-table row" role="rowgroup" >
+                    {/* {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.schoolNo)} */}
                     {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.name)}
                     {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.surname)}
                     {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.stdclass)}
                     {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.schoolstatus)}
-                    {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.stdnumber)}
+                    {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.no)}
                     {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.teacher)}
                     {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.city)}
 
@@ -416,11 +461,57 @@ class StudentList extends Component {
         const { currentPage } = this.state;
         console.log(`stud: ${stud}`);
         console.log(`loading: ${this.state.loading}`)
+        const { uploaded, uploadResponse } = this.props;
+        console.log("uploaded: ")
+        console.log(uploaded)
+        console.log(uploadResponse)
 
+
+        if (uploaded && !this.state.open) {
+            this.handleCloseModal()
+            this.openModal()
+        }
 
         return (
             <div className="main_list animated fadeIn">
-                <Row  >
+                <ReactModal
+                    isOpen={this.state.open}
+                    closeOnDocumentClick
+                    onRequestClose={this.closeModal}
+                    style={{
+                        // overlay: {
+                        //     backgroundColor: 'papayawhip'
+                        // },
+                        content: {
+                            color: 'lightsteelblue',
+                            top: '50%',
+                            left: '50%',
+                            right: 'auto',
+                            bottom: 'auto',
+                            marginRight: '-50%',
+                            transform: 'translate(-50%, -50%)',
+                            height: `auto`, // <-- This sets the height
+                            overlfow: 'scroll' // <-
+                        }
+                    }}
+                >
+                    <div className="Card">
+                        <a className="close" onClick={this.closeModal}>
+                            &times;
+            </a>
+
+                        {`${uploadResponse==null?"":uploadResponse.length} adet öğrenci güncellenmiştir.`}
+                        
+                    </div>
+                    <div className="Action" >
+                            <button
+                                onClick={this.closeModal}
+                            >
+                                Kapat
+        </button>
+                        </div>
+                </ReactModal>
+                <Row>
                     <Col>
                         <Card >
                             <CardHeader>
@@ -495,11 +586,12 @@ class StudentList extends Component {
 
                                 <div className="table-container" role="table" aria-label="Destinations">
                                     <div className="flex-table header" role="rowgroup">
+                                        {/* <div className="table-flex-row-first" role="columnheader">No</div> */}
                                         <div className="table-flex-row" role="columnheader">Ad</div>
                                         <div className="table-flex-row" role="columnheader">Soyad</div>
                                         <div className="table-flex-row" role="columnheader">Sınıf</div>
                                         <div className="table-flex-row" role="columnheader">Durum</div>
-                                        <div className="table-flex-row" role="columnheader">No</div>
+                                        <div className="table-flex-row" role="columnheader">TCKN</div>
                                         <div className="table-flex-row" role="columnheader">Öğretmen</div>
                                         <div className="table-flex-row" role="columnheader">Şehir</div>
                                         <div className="table-flex-row" role="columnheader">İşlemler</div>
@@ -567,10 +659,22 @@ class StudentList extends Component {
     }
 }
 
+const { object, bool, array } = PropTypes;
+
+StudentList.propTypes = {
+    uploaded: bool.isRequired,
+    uploadResponse: array.isRequired,
+    actions: object.isRequired 
+};
 
 
+  const mapDispatch = (dispatch) => {
+    return {
+      actions: bindActionCreators(upload, dispatch)
+    };
+  };
 export default connect(
-    state => ({ isAuthenticated: state.auth.isAuthenticated }),
-    null
+    state => ({ isAuthenticated: state.auth.isAuthenticated, uploadResponse: state.upload.uploadResponse, uploaded: state.upload.uploaded }),
+    mapDispatch
 )(StudentList);
 
