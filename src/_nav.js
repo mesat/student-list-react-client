@@ -14,6 +14,11 @@ export default {
       url: '/students',
       icon: 'icon-pencil'
      },
+     {
+       name: 'Takvim',
+       url: '/calendar',
+       icon: 'icon-pencil'
+      },
     // {
     //   title: true,
     //   name: 'Theme',

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 import AutosizeInput from 'react-input-autosize';
 import {
-    Button, ButtonToolbar, Card, CardBody, CardHeader, Col, Input,
+    Alert, Button, ButtonToolbar, Card, CardBody, CardHeader, Col, Input,
     InputGroup, InputGroupAddon, Pagination, PaginationItem, PaginationLink, Row
 }
     from 'reactstrap';
@@ -69,6 +69,9 @@ class StudentList extends Component {
 
 
     }
+    onDismiss() {
+        this.setState({ visible: false });
+      }
     openModal() {
         const { uploadResponse } = this.props
         const textResp = JSON.stringify(uploadResponse)
@@ -474,7 +477,7 @@ class StudentList extends Component {
 
         return (
             <div className="main_list animated fadeIn">
-                <ReactModal
+                {/* <ReactModal
                     isOpen={this.state.open}
                     closeOnDocumentClick
                     onRequestClose={this.closeModal}
@@ -510,15 +513,20 @@ class StudentList extends Component {
                                 Kapat
         </button>
                         </div>
-                </ReactModal>
+                </ReactModal> */}
                 <Row>
                     <Col>
                         <Card >
+
+                    <Alert color="info" isOpen={this.state.open} toggle={this.closeModal}>
+                    {`${uploadResponse==null?"":uploadResponse.length} adet öğrenci güncellenmiştir.`}
+                </Alert>
                             <CardHeader>
                                 <i className="fa fa-align-justify"></i> Öğrenci Listesi
                                 <div className="card-header-actions">
                                     {/*eslint-disable-next-line*/}
-                                    <a onClick={this.handleOpenModal} className="card-header-action btn btn-setting"><i className="fa fa-cloud-upload fa-lg mt-2"></i>Toplu Yükle</a>
+                                    <a onClick={this.handleOpenModal} className="card-header-action btn btn-setting"><i className="fa fa-user-plus fa-lg mt-2"></i>Yeni Kayıt</a>
+                                   <a onClick={this.handleOpenModal} className="card-header-action btn btn-setting"><i className="fa fa-cloud-upload fa-lg mt-2"></i>Toplu Yükle</a>
                                     <ReactModal
                                         isOpen={this.state.showModal}
                                         contentLabel="Minimal Modal Example"

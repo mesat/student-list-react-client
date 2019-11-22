@@ -30,6 +30,7 @@
     "react-alert": "^5.5.0",
     "react-alert-template-basic": "^1.0.0",
     "react-app-polyfill": "^1.0.1",
+    "react-big-calendar": "^0.22.1",
     "react-chartjs-2": "^2.7.6",
     "react-dom": "^16.8.6",
     "react-input-autosize": "^2.2.1",
