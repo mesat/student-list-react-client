@@ -23,7 +23,8 @@ const ButtonGroups = React.lazy(() => import('./views/Buttons/ButtonGroups'));
 const Buttons = React.lazy(() => import('./views/Buttons/Buttons'));
 const Charts = React.lazy(() => import('./views/Charts'));
 const Dashboard = React.lazy(() => import('./views/Dashboard'));
-const StudentList = React.lazy(() => import('./views/StudentList/StudentList'));
+const StudentList = React.lazy(() => import('./views/StudentList'));
+const StudentForm = React.lazy(()=>import ('./views/StudentForm'));
 const CalendarPage = React.lazy(() => import('./views/Calendar'));
 const CoreUIIcons = React.lazy(() => import('./views/Icons/CoreUIIcons'));
 const Flags = React.lazy(() => import('./views/Icons/Flags'));
@@ -43,6 +44,7 @@ const Login = React.lazy(() => import('./views/Pages/Login/Login'));
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+  { path: '/students/new', name: 'Yeni Öğrenci Ekle', component: requireAuth(StudentForm)},
   { path: '/students', name: 'Öğrenci Listesi', component: requireAuth(StudentList)},
   { path: '/calendar', name: 'CalendarPage', component: requireAuth(CalendarPage)},
   { path: '/theme', exact: true, name: 'Theme', component: Colors },

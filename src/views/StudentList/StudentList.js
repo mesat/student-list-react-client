@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from "react-router-dom";
 import ReactModal from 'react-modal';
 import AutosizeInput from 'react-input-autosize';
 import {
@@ -16,6 +17,16 @@ import { bindActionCreators } from 'redux';
 import * as upload from '../../redux/actions';
 
 
+
+const StudentForm = React.lazy(() => import('../StudentForm'));
+
+const StudentForm = withRouter(() => (
+    <Button
+      onClick={() => this.onSubmit(history)}
+      color="primary" 
+      className="px-4">Giriş Yap
+    </Button>
+  ));
 
 const stdcolumntype = {
     id: '',
@@ -269,6 +280,11 @@ class StudentList extends Component {
 
         ReactModal.setAppElement('#mainclass1')
 
+    }
+    addStudentForm(){
+        return (
+            <Redirect to="/students/new" />
+          ); 
     }
 
 
@@ -525,7 +541,7 @@ class StudentList extends Component {
                                 <i className="fa fa-align-justify"></i> Öğrenci Listesi
                                 <div className="card-header-actions">
                                     {/*eslint-disable-next-line*/}
-                                    <a onClick={this.handleOpenModal} className="card-header-action btn btn-setting"><i className="fa fa-user-plus fa-lg mt-2"></i>Yeni Kayıt</a>
+                                    <a onClick={this.addStudentForm} className="card-header-action btn btn-setting"><i className="fa fa-user-plus fa-lg mt-2"></i>Yeni Kayıt</a>
                                    <a onClick={this.handleOpenModal} className="card-header-action btn btn-setting"><i className="fa fa-cloud-upload fa-lg mt-2"></i>Toplu Yükle</a>
                                     <ReactModal
                                         isOpen={this.state.showModal}

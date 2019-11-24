@@ -5,8 +5,8 @@ import {
 import { Field, reduxForm } from 'redux-form';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import renderRadioButtonField from '../../../../shared/components/form/RadioButton';
-import renderSelectField from '../../../../shared/components/form/Select';
+import renderRadioButtonField from '../../components/form/RadioButton';
+import renderSelectField from '../../components/form/Select';
 
 const StudentForm = ({ handleSubmit, reset, t }) => (
   <Col md={12} lg={12}>
@@ -122,7 +122,7 @@ const StudentForm = ({ handleSubmit, reset, t }) => (
   </Col>
 );
 
-VerticalFormHalf.propTypes = {
+StudentForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   reset: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
