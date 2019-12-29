@@ -6,7 +6,7 @@ import * as upload from '../../../../redux/actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 import PropTypes from 'prop-types';
-import { request } from "https";
+import STUDENT_UPLOAD_MULTI_URL from "../../../../services/Configuration";
 
 class Upload extends Component {
   constructor(props) {
@@ -57,7 +57,7 @@ class Upload extends Component {
     }
   }
 
-  sendRequest(file) {
+  sendRequest(file,studentId,documentType) {
     console.log (`sending file request`)
     return new Promise((resolve, reject) => {
       const req = new XMLHttpRequest();
@@ -102,8 +102,12 @@ class Upload extends Component {
 
       const formData = new FormData();
       formData.append("file", file, file.name);
+      if ( !isNaN(studentId) && !isNaN(documentType)){
+      formData.append("studentId", studentId);
+      formData.append("studentId", documentType);
+      }
 
-      req.open("POST", "http://localhost:8080/upload");
+      req.open("POST", STUDENT_UPLOAD_MULTI_URL);
       req.send(formData);
       console.log("sendRequest finished")
     })

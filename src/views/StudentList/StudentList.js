@@ -23,7 +23,7 @@ const StudentForm = React.lazy(() => import('../StudentForm'));
 
   
 
-const stdcolumntype = {
+export const stdcolumntype = {
     id: '',
     schoolNo: 'schoolNo',
     name: 'name',
@@ -31,8 +31,22 @@ const stdcolumntype = {
     teacher: 'teacher',
     stdclass: 'stdclass',
     no: 'no',
-    schoolstatus: 'schoolStatus',
-    city: 'city'
+    schoolStatus: 'schoolStatus',
+    city: 'city',
+    fatherCell: 'fatherCell',
+    motherCell: 'motherCell',
+    address: 'address',
+    healthInfo: 'healthInfo',
+    systemStatus: 'systemStatus',
+    photoPath: 'photoPath',
+    identityCard: 'identityCard',
+    healthReport: 'healthReport',
+    birthCertificate: 'birthCertificate',
+    referances: 'referances',
+    fatherName:'fatherName',
+    motherName:'motherName',
+    fatherJob:'fatherJob',
+    motherJob:'motherJob'
 }
 
 
@@ -50,7 +64,11 @@ class StudentList extends Component {
             students: [],
             loading: true,
             newRecord: false,
-            newStudent: { id: "", schoolNo: "", name: "", surname: "", teacher: "", stdclass: "", no: "", schoolStatus: "", city: "" },
+            newStudent: {
+                id: "", schoolNo: "", name: "", surname: "", teacher: "", stdclass: "", no: "", schoolStatus: "", city: "", fatherCell:"",
+                motherCell:"", address:"", healthInfo :"", systemStatus: false, photoPath: "", identityCard : "", healthReport: "", birthCertificate : "",
+                referances: "", fatherName:"",motherName:"",fatherJob:"",motherJob:""
+              },
             onInput: false,
             showModal: false,
             onInputIsCurrent: false,
@@ -59,7 +77,8 @@ class StudentList extends Component {
             totalCount: 150,
             //pagesCount : Math.ceil(this.state.totalCount / this.pageSize)
             open: false,
-            textResponse: ""
+            textResponse: "",
+            redirectToStudentForm :false
 
         }
         this.handleOnClick = this.handleOnClick.bind(this)
@@ -467,7 +486,6 @@ class StudentList extends Component {
         )
     }
 
-
     render() {
 
 
@@ -487,8 +505,14 @@ class StudentList extends Component {
             this.handleCloseModal()
             this.openModal()
         }
+        if(this.state.redirectToStudentForm){
+            return(
+                <Redirect to="/students/new" />
+            )
+        }
 
         return (
+            
             <div className="main_list animated fadeIn">
                 {/* <ReactModal
                     isOpen={this.state.open}
@@ -537,11 +561,8 @@ class StudentList extends Component {
                             <CardHeader>
                                 <i className="fa fa-align-justify"></i> Öğrenci Listesi
                                 <div className="card-header-actions">
-                                    {/*eslint-disable-next-line*/}
-                                    <a onClick={()=>{return (
-          <Redirect to="/students/new" />
-        )}} className="card-header-action btn btn-setting"><i className="fa fa-user-plus fa-lg mt-2"></i>Yeni Kayıt</a>
-                                   <a onClick={this.handleOpenModal} className="card-header-action btn btn-setting"><i className="fa fa-cloud-upload fa-lg mt-2"></i>Toplu Yükle</a>
+                                    <Button color="white" onClick={()=>{this.setState({redirectToStudentForm:"true"})}} className="card-header-action btn btn-setting"><i className="fa fa-user-plus fa-lg mt-2"></i>Yeni Kayıt</Button>
+                                   <Button  color="white" onClick={this.handleOpenModal} className="card-header-action btn btn-setting"><i className="fa fa-cloud-upload fa-lg mt-2"></i>Toplu Yükle</Button>
                                     <ReactModal
                                         isOpen={this.state.showModal}
                                         contentLabel="Minimal Modal Example"
