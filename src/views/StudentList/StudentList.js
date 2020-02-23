@@ -38,15 +38,16 @@ export const stdcolumntype = {
     address: 'address',
     healthInfo: 'healthInfo',
     systemStatus: 'systemStatus',
-    photoPath: 'photoPath',
-    identityCard: 'identityCard',
-    healthReport: 'healthReport',
+    photo: 'photo',
+    idCard: 'idCard',
+    medicalReport: 'medicalReport',
     birthCertificate: 'birthCertificate',
     referances: 'referances',
     fatherName:'fatherName',
     motherName:'motherName',
     fatherJob:'fatherJob',
-    motherJob:'motherJob'
+    motherJob:'motherJob',
+    documents:{}
 }
 
 
@@ -377,7 +378,7 @@ class StudentList extends Component {
                             {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.schoolstatus, this.state.onInputIsCurrent)}
                             {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.no, this.state.onInputIsCurrent)}
                             {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.teacher, this.state.onInputIsCurrent)}
-                            {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.city, this.state.onInputIsCurrent)}
+                            {this.Form(this.state.onInput, this.handleOnClick, this.handleOnBlur, stdcolumntype.photo, this.state.onInputIsCurrent)}
 
 
 
@@ -419,7 +420,7 @@ class StudentList extends Component {
                         <div className="table-flex-row" role="cell">{student.schoolStatus}</div>
                         <div className="table-flex-row" role="cell">{student.no}</div>
                         <div className="table-flex-row" role="cell">{student.teacher}</div>
-                        <div className="table-flex-row" role="cell">{student.city}</div>
+                        <div className="table-flex-row" role="cell"><img  className = "img" width="100%" height="100%" src={student.photo}></img></div>
                         <div className="table-flex-row button-group" role="cell">
 
 
@@ -637,7 +638,7 @@ class StudentList extends Component {
                                         <div className="table-flex-row" role="columnheader">Durum</div>
                                         <div className="table-flex-row" role="columnheader">TCKN</div>
                                         <div className="table-flex-row" role="columnheader">Öğretmen</div>
-                                        <div className="table-flex-row" role="columnheader">Şehir</div>
+                                        <div className="table-flex-row" role="columnheader">Resim</div>
                                         <div className="table-flex-row" role="columnheader">İşlemler</div>
                                     </div>
                                     {

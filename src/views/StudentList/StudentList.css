@@ -215,3 +215,6 @@
   margin-left: 0;
   margin-right: 0;
 }
+.img:hover{
+  transform: scale(3);
+}
