@@ -425,7 +425,8 @@ class StudentList extends Component {
 
 
                             <Button className="cui-calendar button-single m-0 btn-sm p-0" color="primary" ></Button>
-                            <Button className="cui-pencil button-single m-0 btn-sm p-0" onClick={() => { this.setState({ editRowId: student.id, onInputIsCurrent: true, onInput: false, newRecord: false }) }} color="primary"></Button>
+                            {/* <Button className="cui-pencil button-single m-0 btn-sm p-0" onClick={() => { this.setState({ editRowId: student.id, onInputIsCurrent: true, onInput: false, newRecord: false }) }} color="primary"></Button> */}
+                            <Button className="cui-pencil button-single m-0 btn-sm p-0" onClick={() => {this.props.history.push(`/students/${student.id}`)}} color="primary"></Button>
                             <Button className="cui-options button-single m-0 btn-sm p-0" color="primary"></Button>
 
                         </div>

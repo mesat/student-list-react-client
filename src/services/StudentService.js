@@ -61,18 +61,25 @@ class StudentService extends Component {
   async getStudent(studentId) {
     console.log("StudentService.getStudent():");
     console.log("Student: " + studentId);
-    return fetch(studentId)
+    let url = this.config.STUDENT_GET_URL+studentId;
+    return fetch(url, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
       .then(response => {
         if (!response.ok) {
           this.handleResponseError(response);
         }
         return response.json();
       })
-      .then(student => {
-        student["link"] = student._links.self.href;
-        return student;
-      }
-      )
+      .then(json => {
+        console.log("Retrieved students:");
+        console.log(json);
+        return json;
+      })
       .catch(error => {
         this.handleError(error);
       });

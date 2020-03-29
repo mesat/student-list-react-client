@@ -5,6 +5,7 @@ class Configuration {
     STUDENT_COLLECTION_SET_URL = "http://localhost:8080/student";
     STUDENT_COLLECTION_SET_URL = "http://localhost:8080/student";
     STUDENT_COLLECTION_SET_URL = "http://localhost:8080/student";
+    STUDENT_GET_URL = "http://localhost:8080/student/";
     STUDENT_UPLOAD_MULTI_URL = "http://localhost:8080/upload/multi";
   }
   export default Configuration;

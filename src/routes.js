@@ -45,6 +45,7 @@ const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/students/new', name: 'Yeni Öğrenci Ekle', component: requireAuth(StudentForm)},
+  { path: '/students/:student_id', name: 'Öğrenci Detay', component: requireAuth(StudentForm)},
   { path: '/students', name: 'Öğrenci Listesi', component: requireAuth(StudentList)},
   { path: '/calendar', name: 'CalendarPage', component: requireAuth(CalendarPage)},
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
