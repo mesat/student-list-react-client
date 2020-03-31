@@ -34,3 +34,5 @@ https://getbootstrap.com/docs/4.0/utilities/spacing/
 https://www.computerhope.com/issues/ch001709.htm
 
 https://github.com/bernabe9/redux-react-session/tree/master/examples/react-router-v4-example used for session management
+
+https://www.w3schools.com/cssref/tryit.asp?filename=trycss_anim_transform
