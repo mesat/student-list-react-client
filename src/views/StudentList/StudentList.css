@@ -215,6 +215,9 @@
   margin-left: 0;
   margin-right: 0;
 }
+@keyframes mymove {
+  50% {transform: scale(3);}
+}
 .img:hover{
-  transform: scale(3);
+  animation: mymove 3s ;
 }

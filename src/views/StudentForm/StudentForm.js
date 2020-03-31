@@ -23,6 +23,11 @@ import {
   InputGroupText,
   Label,
   Row,
+  Alert,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from 'reactstrap';
 import StudentService from '../../services/StudentService';
 import { stdcolumntype } from '../StudentList/StudentList';
@@ -65,9 +70,10 @@ class StudentForm extends Component {
     this.setState({ loading: true });
     console.log(this.state.newStudent)
     this.studentService.createStudent(this.state.newStudent).then(response => {
-      console.log(`then response: ${response}`);
-      if (response.ok) {
+      console.log(response);
+      if (response) {
         console.log("response ok")
+        this.toggle()
       }
       else
         console.log("response false")
@@ -344,11 +350,24 @@ class StudentForm extends Component {
               <CardFooter>
                 <Button type="submit" onClick={this.setStudent} size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Kaydet</Button>
                 <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Sıfırla</Button>
+                
+        <Alert color="info"  isOpen={!this.state.collapse} toggle={this.toggle}>
+                    {`Güncelleme başarılı.`}
+                </Alert>
+                <Modal isOpen={!this.state.collapse} toggle={this.toggle} >
+        <ModalHeader toggle={this.toggle}>Güncelleme Başarılı.</ModalHeader>
+        <ModalBody>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={()=>{this.toggle();this.props.history.push("/students");}}>Öğrenci Listesine Git!</Button>{' '}
+          <Button color="primary" onClick={this.toggle}>Sayfada Kal!</Button>{' '}
+        </ModalFooter>
+      </Modal>
               </CardFooter>
             </Card>
           </Col>
-        </Row>
 
+        </Row>
       </div>
     );
   }

@@ -606,13 +606,13 @@ class StudentList extends Component {
                                     <Row className="align-items-center">
                                         <Col col="3" offset-sm-1="true" sm="2" md="2" xl className="mb-3 mb-xl-0">
                                             <ButtonToolbar role="rowgroup">
-                                                <Button id="yeniKayit" disabled={false} onClick={() => this.setState({ "newRecord": true, "onInputIsCurrent": false, "onInput": true })} size="sm" color="primary"><i className="fa fa-id-badge fa-lg mt-2"></i>Yeni Kayit</Button>
+                                                <Button id="yeniKayit" disabled={true} onClick={() => this.setState({ "newRecord": true, "onInputIsCurrent": false, "onInput": true })} size="sm" color="primary"><i className="fa fa-id-badge fa-lg mt-2"></i>Yeni Kayit</Button>
 
-                                                <Button size="sm" color="primary"><i className="cui-paperclip"></i>Kopyala</Button>
+                                                <Button size="sm" disabled={true} color="primary"><i className="cui-paperclip"></i>Kopyala</Button>
 
-                                                <Button size="sm" color="primary"><i className="fa fa-file-excel-o"></i>Excele Kaydet</Button>
+                                                <Button size="sm" disabled={true} color="primary"><i className="fa fa-file-excel-o"></i>Excele Kaydet</Button>
 
-                                                <Button size="sm" color="primary"><i className="cui-print"></i>Yazdir</Button>
+                                                <Button size="sm" disabled={true} color="primary"><i className="cui-print"></i>Yazdir</Button>
                                             </ButtonToolbar>
 
                                         </Col>
