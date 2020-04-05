@@ -153,49 +153,49 @@ class StudentForm extends Component {
                     </Col>
                   </FormGroup>
                   <FormGroup row>
-                    <Col xs="12" md="6">
+                    <Col xs="auto" md="6">
                       <FormGroup row  >
-                        <Col >
+                        <Col xs="12" md="6">
                           <Label htmlFor="text-input">Adı</Label>
                         </Col>
-                        <Col  >
+                        <Col xs="12" md="6" >
                           <Input onChange={this.handleOnChange.bind(this, stdcolumntype.name)} type="text" id="text-input-name" name="text-input" placeholder="Öğrenci Adı" defaultValue={this.state.newStudent.name} />
                           <FormText >Lütfen adını giriniz</FormText>
                         </Col>
                       </FormGroup>
                       <FormGroup row>
-                        <Col>
+                        <Col xs="12" md="6">
                           <Label htmlFor="text-input">Soyadı</Label>
                         </Col>
-                        <Col >
+                        <Col  xs="12" md="6">
                           <Input onChange={this.handleOnChange.bind(this, stdcolumntype.surname)} type="text" id="text-input-surname" name="text-input" placeholder="Öğrenci Soyadı" defaultValue={this.state.newStudent.surname}/>
                           <FormText color="muted"></FormText>
                         </Col>
                       </FormGroup>
                       <FormGroup row>
-                        <Col>
+                        <Col xs="12" md="6">
                           <Label htmlFor="text-input">Sınıfı</Label>
                         </Col>
-                        <Col>
+                        <Col xs="12" md="6">
                           <Input onChange={this.handleOnChange.bind(this, stdcolumntype.stdclass)} type="text" id="text-input-stdclass" name="text-input" placeholder="Sınıfı" defaultValue={this.state.newStudent.className } />
                           <FormText color="muted">Öğrencinin sınıfını seçiniz</FormText>
                         </Col>
                       </FormGroup>
                       <FormGroup row>
-                        <Col >
+                        <Col xs="12" md="6">
                           <Label htmlFor="text-input">TC Kimlik No</Label>
                         </Col>
-                        <Col>
+                        <Col xs="12" md="6">
                           <Input onChange={this.handleOnChange.bind(this, stdcolumntype.no)} type="text" id="text-input-no" name="text-input-no" placeholder=""  defaultValue={this.state.newStudent.no} />
                           <FormText color="muted">Lütfen geçerli bir TCKN giriniz</FormText>
                         </Col>
                       </FormGroup>
                     </Col>
-                    <Col>
+                    <Col xs="auto">
                       <FormGroup row>
                         <Col >
-                          <Label htmlFor="file-input">Fotograf</Label>
-                          <Input onChange={this.handleOnChange.bind(this, stdcolumntype.photo)} type="file" id="file-input-photo" name="file-input" />
+                          <Label defaultValue="asdas"  for="file-input-photo"  placeholder="asda" >Fotograf</Label>
+                          <Input onChange={this.handleOnChange.bind(this, stdcolumntype.photo)} type="file" id="file-input-photo" name="file-input"/>
                           <div ><img width="100%" height="100%" src={this.state.newStudent.photo}></img></div>
                         </Col>
                       </FormGroup>
@@ -269,14 +269,14 @@ class StudentForm extends Component {
                     </Col>
                     <Col xs="12" md="9">
                       <Input onChange={this.handleOnChange.bind(this, stdcolumntype.schoolStatus)} type="select" name="select" id="select-schoolStatus"  defaultValue={this.state.newStudent.schoolStatus}>
-                        <option value="0">Lütfen Seçiniz</option>
-                        <option value="1">Örgün</option>
-                        <option value="2">Donuk</option>
-                        <option value="3">Örgün Lise</option>
-                        <option value="3">Açık İlahiyat-1</option>
-                        <option value="3">Açık İlahiyat-2</option>
-                        <option value="3">İlitam-1</option>
-                        <option value="3">İlitam-2</option>
+                        <option value="Okul durumu bilinmiyor">Lütfen Seçiniz</option>
+                        <option value="Örgün">Örgün</option>
+                        <option value="Donuk">Donuk</option>
+                        <option value="Örgün Lise">Örgün Lise</option>
+                        <option value="Açık İlahiyat-1">Açık İlahiyat-1</option>
+                        <option value="Açık İlahiyat-2">Açık İlahiyat-2</option>
+                        <option value="İlitam-1">İlitam-1</option>
+                        <option value="İlitam-2">İlitam-2</option>
                       </Input>
                     </Col>
                   </FormGroup>
@@ -356,8 +356,7 @@ class StudentForm extends Component {
                 </Alert>
                 <Modal isOpen={!this.state.collapse} toggle={this.toggle} >
         <ModalHeader toggle={this.toggle}>Güncelleme Başarılı.</ModalHeader>
-        <ModalBody>
-        </ModalBody>
+        
         <ModalFooter>
           <Button color="primary" onClick={()=>{this.toggle();this.props.history.push("/students");}}>Öğrenci Listesine Git!</Button>{' '}
           <Button color="primary" onClick={this.toggle}>Sayfada Kal!</Button>{' '}

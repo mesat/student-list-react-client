@@ -4,7 +4,7 @@ import ReactModal from 'react-modal';
 import AutosizeInput from 'react-input-autosize';
 import {
     Alert, Button, ButtonToolbar, Card, CardBody, CardHeader, Col, Input,
-    InputGroup, InputGroupAddon, Pagination, PaginationItem, PaginationLink, Row
+    InputGroup, InputGroupAddon, Pagination, PaginationItem, PaginationLink, Row, CardImg, CardTitle, CardText, CardDeck, CardGroup, Spinner
 }
     from 'reactstrap';
 import StudentService from '../../services/StudentService';
@@ -21,7 +21,7 @@ import * as upload from '../../redux/actions';
 const StudentForm = React.lazy(() => import('../StudentForm'));
 
 
-  
+
 
 export const stdcolumntype = {
     id: '',
@@ -43,11 +43,11 @@ export const stdcolumntype = {
     medicalReport: 'medicalReport',
     birthCertificate: 'birthCertificate',
     referances: 'referances',
-    fatherName:'fatherName',
-    motherName:'motherName',
-    fatherJob:'fatherJob',
-    motherJob:'motherJob',
-    documents:{}
+    fatherName: 'fatherName',
+    motherName: 'motherName',
+    fatherJob: 'fatherJob',
+    motherJob: 'motherJob',
+    documents: {}
 }
 
 
@@ -66,10 +66,10 @@ class StudentList extends Component {
             loading: true,
             newRecord: false,
             newStudent: {
-                id: "", schoolNo: "", name: "", surname: "", teacher: "", stdclass: "", no: "", schoolStatus: "", city: "", fatherCell:"",
-                motherCell:"", address:"", healthInfo :"", systemStatus: false, photoPath: "", identityCard : "", healthReport: "", birthCertificate : "",
-                referances: "", fatherName:"",motherName:"",fatherJob:"",motherJob:""
-              },
+                id: "", schoolNo: "", name: "", surname: "", teacher: "", stdclass: "", no: "", schoolStatus: "", city: "", fatherCell: "",
+                motherCell: "", address: "", healthInfo: "", systemStatus: false, photoPath: "", identityCard: "", healthReport: "", birthCertificate: "",
+                referances: "", fatherName: "", motherName: "", fatherJob: "", motherJob: ""
+            },
             onInput: false,
             showModal: false,
             onInputIsCurrent: false,
@@ -79,7 +79,7 @@ class StudentList extends Component {
             //pagesCount : Math.ceil(this.state.totalCount / this.pageSize)
             open: false,
             textResponse: "",
-            redirectToStudentForm :false
+            redirectToStudentForm: false
 
         }
         this.handleOnClick = this.handleOnClick.bind(this)
@@ -97,7 +97,7 @@ class StudentList extends Component {
     }
     onDismiss() {
         this.setState({ visible: false });
-      }
+    }
     openModal() {
         const { uploadResponse } = this.props
         const textResp = JSON.stringify(uploadResponse)
@@ -350,11 +350,41 @@ class StudentList extends Component {
 
 
 
+    } fillCards(load, stud) {
+        if (load) {
+            console.log("loading")
+            return <div><Spinner animation="border" role="status">
+                <span className="sr-only">Yükleniyor...</span>
+            </Spinner></div>
+        }
+        else {
+            return <CardDeck  >{stud.map((student) => {
+                return (<div>
+                    <Card >
+                        <CardImg variant="top" style={{ objectFit: 'cover' }} src={student.photo} />
+                        {/* <CardHeader>{student.name}</CardHeader> */}
+                        <CardBody>
+                            <CardTitle ><h3>{student.name}</h3></CardTitle>
+                            <CardTitle ><h3>{student.surname}</h3></CardTitle>
+                            <CardText>
+                                <b style={{ color: "red" }}>{`${student.teacher}`}</b>
+                                <p>{`${student.schoolStatus}`}</p>
+                            </CardText>
+                            <Button className="cui-calendar button-single m-0 btn-sm p-0" color="primary" ></Button>
+                            {/* <Button className="cui-pencil button-single m-0 btn-sm p-0" onClick={() => { this.setState({ editRowId: student.id, onInputIsCurrent: true, onInput: false, newRecord: false }) }} color="primary"></Button> */}
+                            <Button className="cui-pencil button-single m-0 btn-sm p-0" onClick={() => { this.props.history.push(`/students/${student.id}`) }} color="primary"></Button>
+                            <Button className="cui-options button-single m-0 btn-sm p-0" color="primary"></Button>
+                        </CardBody>
+                    </Card></div>)
+
+            })}</CardDeck>
+        }
     }
     fillTable(load, stud) {
         if (load) {
             console.log("loading")
-            return <div>loading</div>
+            return <div>
+                <Spinner animation="grow" size="sm" /></div>
         }
         else {
             return stud.map((student) => {
@@ -420,13 +450,13 @@ class StudentList extends Component {
                         <div className="table-flex-row" role="cell">{student.schoolStatus}</div>
                         <div className="table-flex-row" role="cell">{student.no}</div>
                         <div className="table-flex-row" role="cell">{student.teacher}</div>
-                        <div className="table-flex-row" role="cell"><img  className = "img" width="100%" height="100%" src={student.photo}></img></div>
+                        <div className="table-flex-row" role="cell"><img className="img" width="100%" height="100%" src={student.photo}></img></div>
                         <div className="table-flex-row button-group" role="cell">
 
 
                             <Button className="cui-calendar button-single m-0 btn-sm p-0" color="primary" ></Button>
                             {/* <Button className="cui-pencil button-single m-0 btn-sm p-0" onClick={() => { this.setState({ editRowId: student.id, onInputIsCurrent: true, onInput: false, newRecord: false }) }} color="primary"></Button> */}
-                            <Button className="cui-pencil button-single m-0 btn-sm p-0" onClick={() => {this.props.history.push(`/students/${student.id}`)}} color="primary"></Button>
+                            <Button className="cui-pencil button-single m-0 btn-sm p-0" onClick={() => { this.props.history.push(`/students/${student.id}`) }} color="primary"></Button>
                             <Button className="cui-options button-single m-0 btn-sm p-0" color="primary"></Button>
 
                         </div>
@@ -481,10 +511,10 @@ class StudentList extends Component {
         }
 
     }
-    runCoo(){
+    runCoo() {
         console.log(`authenticated`)
         return (
-          <Redirect to="/" />
+            <Redirect to="/" />
         )
     }
 
@@ -501,20 +531,20 @@ class StudentList extends Component {
         console.log(uploaded)
         console.log(uploadResponse)
 
-       
+
 
         if (uploaded && !this.state.open) {
             this.handleCloseModal()
             this.openModal()
         }
-        if(this.state.redirectToStudentForm){
-            return(
+        if (this.state.redirectToStudentForm) {
+            return (
                 <Redirect to="/students/new" />
             )
         }
 
         return (
-            
+
             <div className="main_list animated fadeIn">
                 {/* <ReactModal
                     isOpen={this.state.open}
@@ -557,14 +587,17 @@ class StudentList extends Component {
                     <Col>
                         <Card >
 
-                    <Alert color="info" isOpen={this.state.open} toggle={this.closeModal}>
-                    {`${uploadResponse==null?"":uploadResponse.length} adet öğrenci güncellenmiştir.`}
-                </Alert>
-                            <CardHeader>
+                            <Alert color="info" isOpen={this.state.open} toggle={this.closeModal}>
+                                {`${uploadResponse == null ? "" : uploadResponse.length} adet öğrenci güncellenmiştir.`}
+                            </Alert>
+                            <CardHeader style={{paddingLeft:"2rem"}}> 
                                 <i className="fa fa-align-justify"></i> Öğrenci Listesi
-                                <div className="card-header-actions">
-                                    <Button color="white" onClick={()=>{this.setState({redirectToStudentForm:"true"})}} className="card-header-action btn btn-setting"><i className="fa fa-user-plus fa-lg mt-2"></i>Yeni Kayıt</Button>
-                                   <Button  color="white" onClick={this.handleOpenModal} className="card-header-action btn btn-setting"><i className="fa fa-cloud-upload fa-lg mt-2"></i>Toplu Yükle</Button>
+                                <div className="card-header-actions" >
+                                    <Button style = {{textAlign:"left"}}color="white" className="card-header-action btn btn-setting" onClick={() => { this.setState({ redirectToStudentForm: "true" }) }}><i className="fa fa-user-plus fa-lg mt-2"></i>Yeni Kayıt</Button>
+                                    <Button style = {{textAlign:"left"}}color="white" className="card-header-action btn btn-setting" onClick={this.handleOpenModal} ><i className="fa fa-cloud-upload fa-lg mt-2"></i>Toplu Yükle</Button>
+                                    <Button style = {{textAlign:"left"}}color="white" className="card-header-action btn btn-setting"><i className="fa fa-clipboard fa-lg mt-2"></i>Kopyala</Button>
+                                    <Button style = {{textAlign:"left"}}color="white" className="card-header-action btn btn-setting"><i className="fa fa-table fa-lg mt-2"></i>Excele Kaydet</Button>
+                                    <Button style = {{textAlign:"left"}}color="white" className="card-header-action btn btn-setting"><i className="fa fa-print fa-lg mt-2"></i>Yazdir</Button>
                                     <ReactModal
                                         isOpen={this.state.showModal}
                                         contentLabel="Minimal Modal Example"
@@ -605,15 +638,11 @@ class StudentList extends Component {
                                 <p>
                                     <Row className="align-items-center">
                                         <Col col="3" offset-sm-1="true" sm="2" md="2" xl className="mb-3 mb-xl-0">
-                                            <ButtonToolbar role="rowgroup">
+                                            {/* <ButtonToolbar role="rowgroup">
                                                 <Button id="yeniKayit" disabled={true} onClick={() => this.setState({ "newRecord": true, "onInputIsCurrent": false, "onInput": true })} size="sm" color="primary"><i className="fa fa-id-badge fa-lg mt-2"></i>Yeni Kayit</Button>
 
-                                                <Button size="sm" disabled={true} color="primary"><i className="cui-paperclip"></i>Kopyala</Button>
-
-                                                <Button size="sm" disabled={true} color="primary"><i className="fa fa-file-excel-o"></i>Excele Kaydet</Button>
-
-                                                <Button size="sm" disabled={true} color="primary"><i className="cui-print"></i>Yazdir</Button>
-                                            </ButtonToolbar>
+                                               
+                                            </ButtonToolbar> */}
 
                                         </Col>
                                         <div className="controls">
@@ -629,6 +658,9 @@ class StudentList extends Component {
                                     {this.newRecordButtons(newRecords)}
 
                                 </p>
+                                <div>
+                                    {this.fillCards(this.state.loading, stud)}
+                                </div>
 
                                 <div className="table-container" role="table" aria-label="Destinations">
                                     <div className="flex-table header" role="rowgroup">
@@ -710,15 +742,15 @@ const { object, bool, array } = PropTypes;
 StudentList.propTypes = {
     uploaded: bool.isRequired,
     uploadResponse: array.isRequired,
-    actions: object.isRequired 
+    actions: object.isRequired
 };
 
 
-  const mapDispatch = (dispatch) => {
+const mapDispatch = (dispatch) => {
     return {
-      actions: bindActionCreators(upload, dispatch)
+        actions: bindActionCreators(upload, dispatch)
     };
-  };
+};
 export default connect(
     state => ({ isAuthenticated: state.auth.isAuthenticated, uploadResponse: state.upload.uploadResponse, uploaded: state.upload.uploaded }),
     mapDispatch

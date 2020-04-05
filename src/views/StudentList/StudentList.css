@@ -221,3 +221,7 @@
 .img:hover{
   animation: mymove 3s ;
 }
+.card-img{
+  width: 15rem;
+  height: 15rem;
+}
